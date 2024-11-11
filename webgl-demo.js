@@ -103,6 +103,7 @@ function loop(time) {
 	let projection = new DOMMatrix();
 	let view = new DOMMatrix();
 	let model = new DOMMatrix();
+	projection = perspective(70.0, 16.0 / 9.0, 0.01, 100.0);
 	gl.uniformMatrix4fv(u_ProjectionMatrix, false, projection.toFloat32Array());
 	gl.uniformMatrix4fv(u_ViewMatrix, false, view.toFloat32Array());
 	gl.uniformMatrix4fv(u_ModelMatrix, false, model.toFloat32Array());
@@ -114,4 +115,16 @@ function loop(time) {
 	gl.useProgram(null);
 
 	requestAnimationFrame(loop)
+}
+
+function perspective(fov, aspectRatio, nearPlane, farPlane) {
+	const f = 1.0 / Math.tan((fov / 180.0 * Math.PI) * 0.5);
+	const matrix = new DOMMatrix();
+	matrix.m11 = f / aspectRatio;
+	matrix.m22 = f;
+	matrix.m33 = (farPlane + nearPlane) / (nearPlane - farPlane);
+	matrix.m34 = -1.0;
+	matrix.m43 = 2.0 * farPlane * nearPlane / (nearPlane - farPlane);
+	matrix.m44 = 0.0;
+	return matrix;
 }
