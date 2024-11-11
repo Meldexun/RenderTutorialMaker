@@ -20,10 +20,16 @@ async function main() {
 }
 
 let program;
+let u_ProjectionMatrix;
+let u_ViewMatrix;
+let u_ModelMatrix;
 let vao;
 
 async function init(gl) {
 	program = await loadProgram(gl, "test.vsh", "test.fsh");
+	u_ProjectionMatrix = gl.getUniformLocation(program, "u_ProjectionMatrix");
+	u_ViewMatrix = gl.getUniformLocation(program, "u_ViewMatrix");
+	u_ModelMatrix = gl.getUniformLocation(program, "u_ModelMatrix");
 
 	const vbo = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
@@ -56,9 +62,17 @@ function loop(time) {
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 	gl.useProgram(program);
+	let projection = new DOMMatrix();
+	let view = new DOMMatrix();
+	let model = new DOMMatrix();
+	gl.uniformMatrix4fv(u_ProjectionMatrix, false, projection.toFloat32Array());
+	gl.uniformMatrix4fv(u_ViewMatrix, false, view.toFloat32Array());
+	gl.uniformMatrix4fv(u_ModelMatrix, false, model.toFloat32Array());
+
 	gl.bindVertexArray(vao);
 	gl.drawArrays(gl.TRIANGLES, 0, 3);
 	gl.bindVertexArray(null);
+
 	gl.useProgram(null);
 
 	requestAnimationFrame(loop)
