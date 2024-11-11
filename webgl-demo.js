@@ -1,12 +1,10 @@
-main();
+let gl;
 
-function sleep(ms) {
-	return new Promise(resolve => setTimeout(resolve, ms));
-}
+main();
 
 async function main() {
 	const canvas = document.querySelector("#glcanvas");
-	const gl = canvas.getContext("webgl2");
+	gl = canvas.getContext("webgl2");
 
 	console.log(gl);
 	if (gl === null) {
@@ -18,24 +16,18 @@ async function main() {
 
 	await init(gl);
 
-	for (var i = 0; i < 1000; i++) {
-		await loop(gl);
-	}
+	requestAnimationFrame(loop)
 }
 
-var program;
-var vbo;
-var vao;
+let program;
+let vao;
 
 async function init(gl) {
-	gl.clearColor(0.2, 0.3, 0.3, 1.0);
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
 	program = await loadProgram(gl, "test.vsh", "test.fsh");
 
-	vbo = gl.createBuffer();
+	const vbo = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-	var data = new Float32Array([
+	const data = new Float32Array([
 		0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
 		1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
 		0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0
@@ -55,9 +47,9 @@ async function init(gl) {
 }
 
 async function loadProgram(gl, vertexShader, fragmentShader) {
-	var program = gl.createProgram();
-	var vsh = await loadShader(gl, gl.VERTEX_SHADER, vertexShader);
-	var fsh = await loadShader(gl, gl.FRAGMENT_SHADER, fragmentShader);
+	const program = gl.createProgram();
+	const vsh = await loadShader(gl, gl.VERTEX_SHADER, vertexShader);
+	const fsh = await loadShader(gl, gl.FRAGMENT_SHADER, fragmentShader);
 
 	gl.attachShader(program, vsh);
 	gl.attachShader(program, fsh);
@@ -75,7 +67,7 @@ async function loadProgram(gl, vertexShader, fragmentShader) {
 }
 
 async function loadShader(gl, type, source) {
-	var shader = gl.createShader(type);
+	const shader = gl.createShader(type);
 	await fetch(source)
 		.then(res => res.text())
 		.then(text => gl.shaderSource(shader, text))
@@ -90,10 +82,13 @@ async function loadShader(gl, type, source) {
 	return shader;
 }
 
-var c = 0.0;
-async function loop(gl) {
-	gl.clearColor(c / 4000.0, 1.0 - c / 2000.0, 0.75, 1.0);
-	c++;
+var prevTime = 0;
+
+function loop(time) {
+	const deltaTime = time - prevTime;
+	prevTime = time;
+
+	gl.clearColor(0.2, 0.2 + (0.8 - 0.2) * (Math.sin(time * 0.001 / 4 * 2.0 * Math.PI) * 0.5 + 0.5), 0.8, 1.0);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 	gl.useProgram(program);
@@ -102,5 +97,5 @@ async function loop(gl) {
 	gl.bindVertexArray(null);
 	gl.useProgram(null);
 
-	await sleep(10);
+	requestAnimationFrame(loop)
 }
