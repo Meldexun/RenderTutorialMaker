@@ -99,6 +99,8 @@ function loop(time) {
 	gl.clearColor(0.1, 0.2, 0.3, 1.0);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+	gl.enable(gl.DEPTH_TEST);
+
 	gl.useProgram(program);
 	let projection = new DOMMatrix();
 	let view = new DOMMatrix();
