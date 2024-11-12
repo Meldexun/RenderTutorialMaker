@@ -108,6 +108,7 @@ function loop(time) {
 	projection = perspective(70.0, 16.0 / 9.0, 0.01, 100.0);
 	view = view.rotateAxisAngleSelf(1.0, 0.0, 0.0, 25.0);
 	view = view.translateSelf(0.0, -0.6, -1.5);
+	model = model.rotateAxisAngleSelf(0.0, 1.0, 0.0, time * 0.001 / 3.0 * 360.0);
 	model = model.translateSelf(-0.5, -0.5, -0.5);
 	gl.uniformMatrix4fv(u_ProjectionMatrix, false, projection.toFloat32Array());
 	gl.uniformMatrix4fv(u_ViewMatrix, false, view.toFloat32Array());
