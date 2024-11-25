@@ -5,7 +5,7 @@ let u_ModelMatrixTP;
 let vaoTP;
 let vao1TP;
 
-async function initTP(gl) {
+window.initTP = async function initTP(gl) {
 	programTP = await loadProgram(gl, "../shaders/test.vsh", "../shaders/test.fsh");
 	u_ProjectionMatrixTP = gl.getUniformLocation(programTP, "u_ProjectionMatrix");
 	u_ViewMatrixTP = gl.getUniformLocation(programTP, "u_ViewMatrix");
@@ -122,7 +122,7 @@ async function initTP(gl) {
 	gl.bindVertexArray(null);
 }
 
-function renderTP(gl, time) {
+window.renderTP = function renderTP(gl, time) {
 	gl.clearColor(0.1, 0.2, 0.3, 1.0);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 

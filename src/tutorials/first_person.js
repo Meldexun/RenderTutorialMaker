@@ -4,7 +4,7 @@ let u_ViewMatrixFP;
 let u_ModelMatrixFP;
 let vaoFP;
 
-async function initFP(gl) {
+window.initFP = async function initFP(gl) {
 	programFP = await loadProgram(gl, "../shaders/test.vsh", "../shaders/test.fsh");
 	u_ProjectionMatrixFP = gl.getUniformLocation(programFP, "u_ProjectionMatrix");
 	u_ViewMatrixFP = gl.getUniformLocation(programFP, "u_ViewMatrix");
@@ -69,7 +69,7 @@ async function initFP(gl) {
 	gl.bindVertexArray(null);
 }
 
-function renderFP(gl, time) {
+window.renderFP = function renderFP(gl, time) {
 	gl.clearColor(0.1, 0.2, 0.3, 1.0);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 

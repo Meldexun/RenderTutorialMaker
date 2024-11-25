@@ -1,2 +1,1 @@
-npx http-server .\src\ -o -p 9999
-pause
+npx http-server .\build\ -o -p 9999
