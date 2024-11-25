@@ -6,7 +6,7 @@ let vaoTP;
 let vao1TP;
 
 async function initTP(gl) {
-	programTP = await loadProgram(gl, "test.vsh", "test.fsh");
+	programTP = await loadProgram(gl, "../shaders/test.vsh", "../shaders/test.fsh");
 	u_ProjectionMatrixTP = gl.getUniformLocation(programTP, "u_ProjectionMatrix");
 	u_ViewMatrixTP = gl.getUniformLocation(programTP, "u_ViewMatrix");
 	u_ModelMatrixTP = gl.getUniformLocation(programTP, "u_ModelMatrix");

@@ -5,7 +5,7 @@ let u_ModelMatrixFP;
 let vaoFP;
 
 async function initFP(gl) {
-	programFP = await loadProgram(gl, "test.vsh", "test.fsh");
+	programFP = await loadProgram(gl, "../shaders/test.vsh", "../shaders/test.fsh");
 	u_ProjectionMatrixFP = gl.getUniformLocation(programFP, "u_ProjectionMatrix");
 	u_ViewMatrixFP = gl.getUniformLocation(programFP, "u_ViewMatrix");
 	u_ModelMatrixFP = gl.getUniformLocation(programFP, "u_ModelMatrix");
