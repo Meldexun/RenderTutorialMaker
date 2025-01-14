@@ -6,7 +6,10 @@ const properties = new Map();
 start();
 
 async function start() {
-	const tutorialId = "projection";
+	const url = window.location.href;
+	const searchParams = new URLSearchParams(new URL(url).searchParams);
+
+	const tutorialId = searchParams.get("id");
 	const config = await fetch("./" + tutorialId + "/" + "config.json")
 		.then(res => res.text())
 		.then(json5.parse);
