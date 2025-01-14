@@ -2,7 +2,6 @@ const json5 = require('json5');
 
 const viewObjects = new Map();
 const properties = new Map();
-properties.set("Projection", perspective(60.0, 16.0 / 9.0, 0.5, 10.0));
 
 start();
 
