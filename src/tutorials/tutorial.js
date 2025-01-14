@@ -58,6 +58,16 @@ async function start() {
 }
 
 function renderLoop(time) {
+	// update properties
+	for (const propEntry of properties.entries()) {
+		const e = document.getElementById(propEntry[0]);
+		try {
+			properties.set(propEntry[0], eval(e.value));
+		} catch (error) {
+			// ignore
+		}
+	}
+
 	for (const viewEntry of viewObjects.entries()) {
 		const e = document.getElementById(viewEntry[0]);
 		const gl = e.getContext("webgl2");
