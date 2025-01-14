@@ -9,7 +9,6 @@
 	gl.uniformMatrix4fv(this.u_ViewMatrix, false, new DOMMatrix().translate(0.0, 0.0, -4.0).toFloat32Array());
 	gl.uniformMatrix4fv(this.u_ModelMatrix, false, new DOMMatrix().rotateAxisAngle(0.0, 1.0, 0.0, time * 0.001 / 3.0 * 360.0).toFloat32Array());
 
-	// TODO render model
 	gl.enableVertexAttribArray(0);
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.model.vertexBuffer);
 	gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
