@@ -1,0 +1,24 @@
+{
+	"title": "Projection Tutorial",
+	"views": [
+		{
+			"id": "third_person",
+			"type": "custom",
+			"width": 640,
+			"height": 360
+		},
+		{
+			"id": "first_person",
+			"type": "custom",
+			"width": 640,
+			"height": 360
+		}
+	],
+	"properties": [
+		{
+			"name": "Projection",
+			"type": "mat4",
+			"default": "perspective(60.0, 16.0 / 9.0, 0.5, 10.0)"
+		}
+	]
+}

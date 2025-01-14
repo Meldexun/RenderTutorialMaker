@@ -1,4 +1,3 @@
-const jszip = require('jszip');
 const json5 = require('json5');
 
 const viewObjects = new Map();
@@ -8,11 +7,9 @@ properties.set("Projection", perspective(60.0, 16.0 / 9.0, 0.5, 10.0));
 start();
 
 async function start() {
-	const zip = await fetch("projection.zip")
-		.then(res => res.blob())
-		.then(jszip.loadAsync);
-	const config = await zip.file("config.json")
-		.async("string")
+	const tutorialId = "projection";
+	const config = await fetch("./" + tutorialId + "/" + "config.json")
+		.then(res => res.text())
 		.then(json5.parse);
 
 	document.title = config.title;
@@ -25,8 +22,8 @@ async function start() {
 		document.body.appendChild(e);
 
 		var o = {
-			init: eval(await zip.file(view.id + "_init.js").async("string")),
-			loop: eval(await zip.file(view.id + "_loop.js").async("string"))
+			init: eval(await fetch("./" + tutorialId + "/" + view.id + "_init.js").then(res => res.text())),
+			loop: eval(await fetch("./" + tutorialId + "/" + view.id + "_loop.js").then(res => res.text()))
 		};
 		o.id = view.id;
 		viewObjects.set(view.id, o);
