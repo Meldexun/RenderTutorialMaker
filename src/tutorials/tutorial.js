@@ -22,6 +22,7 @@ async function start() {
 		e.width = view.width;
 		e.height = view.height;
 		document.body.appendChild(e);
+		document.body.appendChild(document.createElement("br"));
 
 		var o = {
 			init: eval(await fetch("./" + tutorialId + "/" + view.id + "_init.js").then(res => res.text())),
@@ -34,6 +35,8 @@ async function start() {
 		await o.init(gl);
 	}
 
+	document.body.appendChild(document.createElement("br"));
+
 	for (const property of config.properties) {
 		const e1 = document.createElement("label");
 		e1.for = property.name;
@@ -44,7 +47,9 @@ async function start() {
 		e0.name = property.name;
 		e0.value = property.default;
 		document.body.appendChild(e1);
+		document.body.appendChild(document.createElement("br"));
 		document.body.appendChild(e0);
+		document.body.appendChild(document.createElement("br"));
 		
 		properties.set(property.name, eval(property.default));
 	}
