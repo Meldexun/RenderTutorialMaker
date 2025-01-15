@@ -9,17 +9,20 @@
 	gl.uniformMatrix4fv(this.u_ViewMatrix, false, new DOMMatrix().translate(0.0, 0.0, -6.0).rotateAxisAngle(0.0, 1.0, 0.0, -60.0).toFloat32Array());
 	gl.uniformMatrix4fv(this.u_ModelMatrix, false, new DOMMatrix().rotateAxisAngle(0.0, 1.0, 0.0, time * 0.001 / 3.0 * 360.0).toFloat32Array());
 
-	gl.enableVertexAttribArray(0);
+	const vertexAttribLocation = gl.getAttribLocation(this.program, "a_Position");
+	gl.enableVertexAttribArray(vertexAttribLocation);
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.model.vertexBuffer);
-	gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+	gl.vertexAttribPointer(vertexAttribLocation, this.model.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-	gl.enableVertexAttribArray(1);
+	const textureAttribLocation = gl.getAttribLocation(this.program, "a_Texture");
+	gl.enableVertexAttribArray(textureAttribLocation);
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.model.textureBuffer);
-	gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
+	gl.vertexAttribPointer(textureAttribLocation, this.model.textureBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-	gl.enableVertexAttribArray(2);
+	const normalAttribLocation = gl.getAttribLocation(this.program, "a_Normal");
+	gl.enableVertexAttribArray(normalAttribLocation);
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.model.normalBuffer);
-	gl.vertexAttribPointer(2, 3, gl.FLOAT, false, 0, 0);
+	gl.vertexAttribPointer(normalAttribLocation, this.model.normalBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.model.indexBuffer);
 
