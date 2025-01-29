@@ -1,1 +1,0 @@
-npx http-server .\build\ -o -p 9999
