@@ -3,3 +3,6 @@ build
 # eclipse
 .project
 .settings
+
+# npm
+node_modules
