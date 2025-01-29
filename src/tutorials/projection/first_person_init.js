@@ -4,6 +4,6 @@
 	this.u_ViewMatrix = gl.getUniformLocation(this.program, "u_ViewMatrix");
 	this.u_ModelMatrix = gl.getUniformLocation(this.program, "u_ModelMatrix");
 
-	this.model = await loadModel(gl, "../models/indoor plant_02.obj");
+	this.model = await loadOBJ(gl, "../models/indoor plant_02.obj");
 	this.texture = await loadTexture(gl, "../models/indoor plant_2_COL.jpg");
 });
