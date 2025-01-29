@@ -8,6 +8,9 @@
   },
   "author": "Micha Kotlowski",
   "license": "ISC",
+  "dependencies": {
+    "webgl-gltf": "^0.3.3"
+  },
   "devDependencies": {
     "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1"
