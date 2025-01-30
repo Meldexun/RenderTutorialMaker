@@ -1,4 +1,3 @@
-const json5 = require('json5');
 
 const viewObjects = new Map();
 const properties = new Map();
@@ -12,7 +11,7 @@ async function start() {
 	const tutorialId = searchParams.get("id");
 	const config = await fetch("./" + tutorialId + "/" + "config.json")
 		.then(res => res.text())
-		.then(json5.parse);
+		.then(JSON.parse);
 
 	document.title = config.title;
 
