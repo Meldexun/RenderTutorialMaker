@@ -1,5 +1,5 @@
 
-window.perspective = function perspective(fov, aspectRatio, nearPlane, farPlane) {
+export function perspective(fov, aspectRatio, nearPlane, farPlane) {
 	const f = 1.0 / Math.tan((fov / 180.0 * Math.PI) * 0.5);
 	const matrix = new DOMMatrix();
 	matrix.m11 = f / aspectRatio;
@@ -11,7 +11,7 @@ window.perspective = function perspective(fov, aspectRatio, nearPlane, farPlane)
 	return matrix;
 }
 
-window.lookAt = function lookAt(eye, center, up) {
+export function lookAt(eye, center, up) {
 	const matrix = new DOMMatrix();
 	const f = center.subtract(eye).normalize();
 	const s = f.crossProduct(up.normalize());

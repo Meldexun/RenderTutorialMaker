@@ -1,3 +1,13 @@
+import * as MatrixUtil from "../util/matrix_util.js";
+import * as OBJLoader from "../util/obj_loader.js";
+import * as ShaderLoader from "../util/shader_loader.js";
+import * as TextureLoader from "../util/texture_loader.js";
+
+const perspective = MatrixUtil.perspective;
+const lookAt = MatrixUtil.lookAt;
+const loadOBJ = OBJLoader.loadOBJ;
+const loadProgram = ShaderLoader.loadProgram;
+const loadTexture = TextureLoader.loadTexture;
 
 const viewObjects = new Map();
 const properties = new Map();

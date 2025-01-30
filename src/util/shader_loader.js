@@ -1,5 +1,5 @@
 
-window.loadProgram = async function loadProgram(gl, vertexShader, fragmentShader) {
+export async function loadProgram(gl, vertexShader, fragmentShader) {
 	const program = gl.createProgram();
 	const vsh = await loadShader(gl, gl.VERTEX_SHADER, vertexShader);
 	const fsh = await loadShader(gl, gl.FRAGMENT_SHADER, fragmentShader);
