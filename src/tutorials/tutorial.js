@@ -25,13 +25,13 @@ async function start() {
 
 	document.title = config.title;
 
+	const main = document.querySelector("main");
 	for (const view of config.views) {
 		const e = document.createElement("canvas");
 		e.id = view.id;
-		e.width = view.width;
-		e.height = view.height;
-		document.body.appendChild(e);
-		document.body.appendChild(document.createElement("br"));
+		e.style = "width: " + view.width + "px;" + "height: " + view.height + "px;";
+		main.appendChild(e);
+		main.appendChild(document.createElement("br"));
 
 		var o = {
 			init: eval(await fetch("./" + tutorialId + "/" + view.id + "_init.js").then(res => res.text())),
@@ -44,7 +44,7 @@ async function start() {
 		await o.init(gl);
 	}
 
-	document.body.appendChild(document.createElement("br"));
+	main.appendChild(document.createElement("br"));
 
 	for (const property of config.properties) {
 		const e1 = document.createElement("label");
@@ -55,10 +55,10 @@ async function start() {
 		e0.id = property.name;
 		e0.name = property.name;
 		e0.value = property.default;
-		document.body.appendChild(e1);
-		document.body.appendChild(document.createElement("br"));
-		document.body.appendChild(e0);
-		document.body.appendChild(document.createElement("br"));
+		main.appendChild(e1);
+		main.appendChild(document.createElement("br"));
+		main.appendChild(e0);
+		main.appendChild(document.createElement("br"));
 		
 		properties.set(property.name, eval(property.default));
 	}

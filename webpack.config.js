@@ -24,6 +24,10 @@ module.exports = {
 					info: { minimized: true }
 				},
 				{
+					from: 'tutorials/tutorial.css',
+					to: 'tutorials/tutorial.css'
+				},
+				{
 					from: 'tutorials/tutorial.html',
 					to: 'tutorials/tutorial.html'
 				},
