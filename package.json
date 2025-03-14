@@ -11,6 +11,8 @@
   "author": "Micha Kotlowski",
   "license": "ISC",
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.3",
+    "codemirror": "^6.0.1",
     "express": "^4.21.2",
     "http-terminator": "^3.2.0",
     "readline": "^1.3.0",
