@@ -1,0 +1,137 @@
+html {
+	color-scheme: dark;
+}
+
+body {
+	font-family: JetBrains Mono, monospace;
+	font-size: 10pt;
+	line-height: 150%;
+	margin: 0;
+	background: #0D1117;
+	color: #e0e2e4;
+}
+
+#body {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+header {
+	background: #010409;
+	color: #15B8D8;
+	padding: 5px 20px;
+	margin: 0;
+	box-shadow: 0 0 4px #130b00;
+	line-height: 100%;
+
+	a:active,
+	a:hover,
+	a:link,
+	a:visited {
+		color: #15B8D8;
+		text-decoration: none;
+	}
+}
+
+main {
+	background: #0D1117;
+	display: flex;
+	flex-direction: column;
+	padding: 0 20px 20px;
+	flex-grow: 1;
+	width: 60%;
+	align-self: center;
+
+	h3 {
+		margin: 0
+	}
+
+	.tutorial-header {
+		display: flex;
+		justify-content: space-between;
+
+		.tutorial-name {
+			display: flex;
+			justify-content: space-between;
+			width: 200px;
+		}
+
+		.buttons {
+			display: flex;
+			justify-content: space-between;
+
+			>button {
+				margin: 0 4px;
+			}
+		}
+	}
+
+	.views-container,
+	.properties-container {
+		margin: 15px 5px;
+	}
+
+	.views-header,
+	.properties-header {
+		display: flex;
+		justify-content: space-between;
+		width: 150px;
+	}
+
+	.view,
+	.property {
+		background: #202020;
+		padding: 5px;
+		margin: 5px 10px;
+
+		.view-header,
+		.property-header {
+			display: flex;
+			justify-content: space-between;
+
+			.buttons {
+				display: flex;
+				justify-content: space-between;
+
+				>button {
+					margin: 0 4px;
+				}
+			}
+		}
+
+		>div {
+			padding: 2px 0
+		}
+
+		.input-oneline {
+			display: flex;
+			justify-content: space-between;
+			width: 300px;
+		}
+	}
+}
+
+footer {
+	background: #010409;
+	color: #9198A1;
+	padding: 20px;
+	margin: 0;
+	box-shadow: 0 0 4px #130b00;
+	line-height: 100%;
+	text-align: right;
+}
+
+.cm-editor {
+	background-color: #1E1F22;
+	height: 50vh
+}
+
+.cm-gutter {
+	background-color: #1E1F22;
+	color: #77919A
+}
+
+.cm-activeLineGutter {
+	background-color: #1E1F22;
+}

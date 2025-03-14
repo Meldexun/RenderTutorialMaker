@@ -1,38 +1,49 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8" />
-<title>Create Tutorial</title>
-<script src="create_tutorial.js" type="module"></script>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" href="create_tutorial.css">
+	<title>Tutorial Editor</title>
+	<script src="create_tutorial.js" type="module"></script>
 </head>
 
 <body>
-  <table>
-    <tr>
-      <td>Views:</td>
-      <td>Properties:</td>
-    </tr>
-    <tr>
-      <td>
-        <textarea id="gl_views" rows="10" cols="120">// render loop</textarea>
-      </td>
-      <td>
-        <textarea id="gl_properties" rows="10" cols="120">// render loop</textarea>
-      </td>
-    </tr>
-    <tr>
-      <td>Initialization:</td>
-      <td>Loop:</td>
-    </tr>
-    <tr>
-      <td>
-        <textarea id="gl_init" rows="25" cols="120">// render loop</textarea>
-      </td>
-      <td>
-        <textarea id="gl_loop" rows="25" cols="120">// render loop</textarea>
-      </td>
-    </tr>
-  </table>
-  <button id="create_tutorial">Create</button>
+	<div id="body">
+		<header>
+			<h2><a href="/">Render Tutorial Maker</a></h2>
+		</header>
+		<main>
+			<h1>Tutorial Editor</h1>
+			<form id="form" method="POST" action="/api/endpoint">
+				<div class="tutorial-header">
+					<div class="tutorial-name">
+						<label for="name">Name</label>
+						<input type="text" id="name" name="name" value="Unnamed Tutorial">
+					</div>
+					<div class="buttons">
+						<button id="save" type="button">Save</button>
+						<button id="save" type="button">Delete</button>
+					</div>
+				</div>
+				<div class="views-container">
+					<div class="views-header">
+						<h3>Views</h3>
+						<button id="add_view" type="button">Add</button>
+					</div>
+					<div id="views"></div>
+				</div>
+				<div class="properties-container">
+					<div class="properties-header">
+						<h3>Properties</h3>
+						<button id="add_property" type="button">Add</button>
+					</div>
+					<div id="properties"></div>
+				</div>
+			</form>
+		</main>
+		<footer>© 2025 <a href="https://gitlab.uni-ulm.de/lds72">Micha Kotlowski</a>.</footer>
+	</div>
 </body>
+
 </html>

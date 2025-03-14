@@ -31,6 +31,7 @@ module.exports = {
 					from: 'tutorials/tutorial.html',
 					to: 'tutorials/tutorial.html'
 				},
+				'create_tutorial.css',
 				'create_tutorial.html',
 				'index.css',
 				'index.html'
