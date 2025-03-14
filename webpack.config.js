@@ -32,6 +32,7 @@ module.exports = {
 					to: 'tutorials/tutorial.html'
 				},
 				'create_tutorial.html',
+				'index.css',
 				'index.html'
 			]
 		})
