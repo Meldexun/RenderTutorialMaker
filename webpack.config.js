@@ -9,9 +9,9 @@ module.exports = {
 			import: './tutorials/tutorial.js',
 			filename: 'tutorials/tutorial.js'
 		},
-		tutorial_editor: {
-			import: './create_tutorial.js',
-			filename: 'create_tutorial.js'
+		edit: {
+			import: './edit.js',
+			filename: 'edit.js'
 		}
 	},
 	plugins: [
@@ -31,8 +31,8 @@ module.exports = {
 					from: 'tutorials/tutorial.html',
 					to: 'tutorials/tutorial.html'
 				},
-				'create_tutorial.css',
-				'create_tutorial.html',
+				'edit.css',
+				'edit.html',
 				'index.css',
 				'index.html'
 			]
