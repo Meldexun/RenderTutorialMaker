@@ -109,6 +109,10 @@ main {
 			justify-content: space-between;
 			width: 300px;
 		}
+
+		.presets-input {
+			align-items: flex-start;
+		}
 	}
 }
 

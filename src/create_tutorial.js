@@ -69,7 +69,7 @@ class View {
 		this.loop.container.className = "input-multiline";
 		this.loopEditor = new EditorView({
 			parent: this.loop.container,
-			extensions: [basicSetup, javascript(), autocompletion()],
+			extensions: [basicSetup, javascript()],
 			doc: "..."
 		});
 
@@ -165,12 +165,12 @@ class Property {
 		this.type = new LabeledInput("Type", "property_" + id + "_type", "select", type => {
 			addOption(type, "boolean");
 			addOption(type, "number");
-			addOption(type, "vector2");
-			addOption(type, "vector3");
-			addOption(type, "vector4");
-			addOption(type, "matrix2");
-			addOption(type, "matrix3");
-			addOption(type, "matrix4");
+			addOption(type, "vec2");
+			addOption(type, "vec3");
+			addOption(type, "vec4");
+			addOption(type, "mat2");
+			addOption(type, "mat3");
+			addOption(type, "mat4");
 			addOption(type, "string (single-line)");
 			addOption(type, "string (multi-line)");
 			type.onchange = () => {
@@ -178,72 +178,124 @@ class Property {
 					case "boolean":
 						this.defaultValue.input.value = false;
 						this.inputOptions.replaceChildren(
-							createInputOption("checkbox", "Checkbox", true, true)
+							createInputOption("property_" + id + "_input_checkbox", "Checkbox", true)
 						);
 						break;
 					case "number":
-						this.defaultValue.input.value = 0;
+					case "vec2":
+					case "vec3":
+					case "vec4":
+					case "mat2":
+					case "mat3":
+					case "mat4":
+						switch (type.value) {
+							case "number":
+								this.defaultValue.input.value = 0;
+								break;
+							case "vector2":
+								this.defaultValue.input.value = "vec2.create()";
+								break;
+							case "vector3":
+								this.defaultValue.input.value = "vec3.create()";
+								break;
+							case "vector4":
+								this.defaultValue.input.value = "vec4.create()";
+								break;
+							case "matrix2":
+								this.defaultValue.input.value = "mat2.create()";
+								break;
+							case "matrix3":
+								this.defaultValue.input.value = "mat3.create()";
+								break;
+							case "matrix4":
+								this.defaultValue.input.value = "mat4.create()";
+								break;
+						}
 						this.inputOptions.replaceChildren(
-							createInputOption("number", "Number", true),
-							createInputOption("slider", "Slider")
+							createLabelElementContainer("Min", "property_" + id + "_min", "property_" + id + "_min", "input", min => {
+								min.type = "number";
+								min.parentNode.className = "input-oneline";
+							}),
+							createLabelElementContainer("Max", "property_" + id + "_max", "property_" + id + "_max", "input", max => {
+								max.type = "number";
+								max.parentNode.className = "input-oneline";
+							}),
+							createInputOption("property_" + id + "_input_number", "Number", true)
 						);
-						break;
-					case "vector2":
-						this.defaultValue.input.value = "vec2.create()";
-						this.inputOptions.replaceChildren(
-							createInputOption("number", "Number", true),
-							createInputOption("slider", "Slider")
-						);
-						break;
-					case "vector3":
-						this.defaultValue.input.value = "vec3.create()";
-						this.inputOptions.replaceChildren(
-							createInputOption("number", "Number", true),
-							createInputOption("slider", "Slider")
-						);
-						break;
-					case "vector4":
-						this.defaultValue.input.value = "vec4.create()";
-						this.inputOptions.replaceChildren(
-							createInputOption("number", "Number", true),
-							createInputOption("slider", "Slider")
-						);
-						break;
-					case "matrix2":
-						this.defaultValue.input.value = "mat2.create()";
-						this.inputOptions.replaceChildren(
-							createInputOption("number", "Number", true),
-							createInputOption("slider", "Slider")
-						);
-						break;
-					case "matrix3":
-						this.defaultValue.input.value = "mat3.create()";
-						this.inputOptions.replaceChildren(
-							createInputOption("number", "Number", true),
-							createInputOption("slider", "Slider")
-						);
-						break;
-					case "matrix4":
-						this.defaultValue.input.value = "mat4.create()";
-						this.inputOptions.replaceChildren(
-							createInputOption("number", "Number", true),
-							createInputOption("slider", "Slider")
-						);
+						if (type.value === "number") {
+							this.inputOptions.appendChild(createInputOption("slider", "Slider"));
+						}
 						break;
 					case "string (single-line)":
 						this.defaultValue.input.value = "";
 						this.inputOptions.replaceChildren(
-							createInputOption("text", "Text", true, true)
+							createLabelElementContainer("Language", "property_" + id + "_language", "property_" + id + "_language", "select", language => {
+								language.parentNode.className = "input-oneline";
+								addOption(language, "Plain-Text");
+								addOption(language, "JavaScript");
+								addOption(language, "GLSL");
+							}),
+							createInputOption("property_" + id + "_input_text", "Text", true)
 						);
 						break;
 					case "string (multi-line)":
 						this.defaultValue.input.value = "";
 						this.inputOptions.replaceChildren(
-							createInputOption("textarea", "Text Area", true, true)
+							createLabelElementContainer("Language", "property_" + id + "_language", "property_" + id + "_language", "select", language => {
+								language.parentNode.className = "input-oneline";
+								addOption(language, "Plain-Text");
+								addOption(language, "JavaScript");
+								addOption(language, "GLSL");
+							}),
+							createInputOption("property_" + id + "_input_textarea", "Text Area", true)
 						);
 						break;
 					default:
 						break;
+				}
+				if (type.value !== "boolean") {
+					this.inputOptions.appendChild(createElement("div", c => {
+						c.className = "input-oneline presets-input";
+						c.appendChild(createElement("div", c1 => {
+							c1.appendChild(createElement("input", checkbox => {
+								checkbox.type = "checkbox";
+								checkbox.id = "presets";
+								checkbox.name = "presets"
+								checkbox.onchange = () => {
+									for (let child = c1.nextSibling; child !== null; child = child.nextSibling) {
+										child.querySelectorAll("input, button").forEach(element => {
+											element.disabled = !checkbox.checked;
+										});
+									}
+								};
+							}));
+							c1.appendChild(createElement("label", label => {
+								label.textContent = "Presets";
+							}));
+						}));
+						c.appendChild(createElement("div", presets => {
+							presets.appendChild(createElement("button", button => {
+								button.type = "button";
+								button.textContent = "Add Preset";
+								button.onclick = () => {
+									button.parentNode.insertBefore(createElement("div", preset => {
+										preset.appendChild(createElement("input", input => {
+											input.type = "text";
+											input.id = "property_" + id + "_preset_" + (button.parentNode.children.length - 1);
+											input.name = "property_" + id + "_preset_" + (button.parentNode.children.length - 1);
+										}));
+										preset.appendChild(createElement("button", button => {
+											button.type = "button";
+											button.textContent = "Delete";
+											button.onclick = () => {
+												preset.remove();
+											};
+										}));
+									}), button);
+								};
+							}));
+						}));
+					}));
 				}
 			};
 		});
@@ -319,8 +371,9 @@ function createLabelElementContainer(labelText, id, name, type, initElement = _ 
 	const element = document.createElement(type);
 	element.id = id;
 	element.name = name;
-	initElement(element);
 	container.appendChild(element);
+
+	initElement(element);
 
 	return container;
 }
@@ -331,13 +384,14 @@ function createElementLabelContainer(parent, labelText, tagName, id, name, initE
 	const element = document.createElement(type);
 	element.id = id;
 	element.name = name;
-	initElement(element);
 	container.appendChild(element);
 
 	const label = document.createElement("label");
 	label.for = id;
 	label.innerText = labelText;
 	container.appendChild(label);
+
+	initElement(element);
 
 	return container;
 }
@@ -346,6 +400,7 @@ function createInputOption(id, text, checked = false, disabled = false) {
 	return createElement("div", container => {
 		container.appendChild(createElement("input", input => {
 			input.id = id;
+			input.name = id;
 			input.type = "checkbox";
 			input.checked = checked;
 			input.disabled = disabled;
