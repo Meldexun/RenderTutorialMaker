@@ -7,15 +7,18 @@ const http_terminator = require('http-terminator');
 const folder = process.argv.length >= 3 ? process.argv[2] : ".";
 const port = process.argv.length >= 4 ? process.argv[3] : "25565";
 
-// create and start server
 console.log("Server starting...");
+// create server
 const app = express();
+// use given folder as src
 app.use(express.static(folder));
+// process tutorial save requests
 app.post('/api/endpoint', multer().none(), (req, res) => {
 	const { body } = req;
 	console.log({ body });
 	res.send('Data received successfully');
 	
+	// save tutorial
 	const tutorialDir = folder + "/tutorials/" + body.name;
 	fs.mkdir(tutorialDir, (err, dir) => {
 		if (err) {
@@ -47,16 +50,18 @@ app.post('/api/endpoint', multer().none(), (req, res) => {
 		fs.writeFileSync(tutorialDir + "/config.json", JSON.stringify(config), "utf8");
 	});
 	
-	console.log('Tutorial created successfully');
+	console.log('Tutorial "' + body.name + '" saved successfully!');
 });
+// start server listening on given port
 const server = app.listen(port);
 console.log("Server started");
 
-// stop server when "stop" is typed in command line
+// process commandline inputs
 readline.createInterface({
 	input: process.stdin,
 	output: process.stbout
 }).prependListener("line", async line => {
+	// stop server when "stop" is typed in command line
 	if (line === "stop") {
 		console.log("Server stopping...");
 		await http_terminator.createHttpTerminator({ server }).terminate();
