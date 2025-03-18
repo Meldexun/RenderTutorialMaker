@@ -1,7 +1,7 @@
-import * as MatrixUtil from "../util/matrix_util.js";
-import * as OBJLoader from "../util/obj_loader.js";
-import * as ShaderLoader from "../util/shader_loader.js";
-import * as TextureLoader from "../util/texture_loader.js";
+import * as MatrixUtil from "./util/matrix_util.js";
+import * as OBJLoader from "./util/obj_loader.js";
+import * as ShaderLoader from "./util/shader_loader.js";
+import * as TextureLoader from "./util/texture_loader.js";
 
 const perspective = MatrixUtil.perspective;
 const lookAt = MatrixUtil.lookAt;
@@ -19,7 +19,7 @@ async function start() {
 	const searchParams = new URLSearchParams(new URL(url).searchParams);
 
 	const tutorialId = searchParams.get("id");
-	const config = await fetch("./" + tutorialId + "/" + "config.json")
+	const config = await fetch("./tutorials/" + tutorialId + "/" + "config.json")
 		.then(res => res.text())
 		.then(JSON.parse);
 
@@ -34,8 +34,8 @@ async function start() {
 		main.appendChild(document.createElement("br"));
 
 		var o = {
-			init: eval(await fetch("./" + tutorialId + "/" + view.id + "_init.js").then(res => res.text())),
-			loop: eval(await fetch("./" + tutorialId + "/" + view.id + "_loop.js").then(res => res.text()))
+			init: eval(await fetch("./tutorials/" + tutorialId + "/" + view.id + "_init.js").then(res => res.text())),
+			loop: eval(await fetch("./tutorials/" + tutorialId + "/" + view.id + "_loop.js").then(res => res.text()))
 		};
 		o.id = view.id;
 		viewObjects.set(view.id, o);

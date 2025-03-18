@@ -5,13 +5,13 @@ module.exports = {
 	mode: 'development',
 	context: path.resolve(__dirname, 'src'),
 	entry: {
-		tutorial_viewer: {
-			import: './tutorials/tutorial.js',
-			filename: 'tutorials/tutorial.js'
-		},
 		edit: {
 			import: './edit.js',
 			filename: 'edit.js'
+		},
+		tutorial: {
+			import: './tutorial.js',
+			filename: 'tutorial.js'
 		}
 	},
 	plugins: [
@@ -23,18 +23,12 @@ module.exports = {
 					from: 'tutorials/projection/**/*',
 					info: { minimized: true }
 				},
-				{
-					from: 'tutorials/tutorial.css',
-					to: 'tutorials/tutorial.css'
-				},
-				{
-					from: 'tutorials/tutorial.html',
-					to: 'tutorials/tutorial.html'
-				},
 				'edit.css',
 				'edit.html',
 				'index.css',
-				'index.html'
+				'index.html',
+				'tutorial.css',
+				'tutorial.html'
 			]
 		})
 	],
