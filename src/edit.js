@@ -192,22 +192,22 @@ class Property {
 							case "number":
 								this.defaultValue.input.value = 0;
 								break;
-							case "vector2":
+							case "vec2":
 								this.defaultValue.input.value = "vec2.create()";
 								break;
-							case "vector3":
+							case "vec3":
 								this.defaultValue.input.value = "vec3.create()";
 								break;
-							case "vector4":
+							case "vec4":
 								this.defaultValue.input.value = "vec4.create()";
 								break;
-							case "matrix2":
+							case "mat2":
 								this.defaultValue.input.value = "mat2.create()";
 								break;
-							case "matrix3":
+							case "mat3":
 								this.defaultValue.input.value = "mat3.create()";
 								break;
-							case "matrix4":
+							case "mat4":
 								this.defaultValue.input.value = "mat4.create()";
 								break;
 						}
