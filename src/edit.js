@@ -259,8 +259,8 @@ class Property {
 						c.appendChild(createElement("div", c1 => {
 							c1.appendChild(createElement("input", checkbox => {
 								checkbox.type = "checkbox";
-								checkbox.id = "presets";
-								checkbox.name = "presets"
+								checkbox.id = "property_" + id + "_presets";
+								checkbox.name = "property_" + id + "_presets"
 								checkbox.onchange = () => {
 									for (let child = c1.nextSibling; child !== null; child = child.nextSibling) {
 										child.querySelectorAll("input, button").forEach(element => {
