@@ -9,9 +9,9 @@ module.exports = {
 			import: './edit.js',
 			filename: 'edit.js'
 		},
-		tutorial: {
-			import: './tutorial.js',
-			filename: 'tutorial.js'
+		view: {
+			import: './view.js',
+			filename: 'view.js'
 		}
 	},
 	plugins: [
@@ -27,8 +27,8 @@ module.exports = {
 				'edit.html',
 				'index.css',
 				'index.html',
-				'tutorial.css',
-				'tutorial.html'
+				'view.css',
+				'view.html'
 			]
 		})
 	],
