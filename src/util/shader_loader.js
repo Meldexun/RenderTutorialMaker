@@ -1,8 +1,8 @@
 
-export async function loadProgram(gl, vertexShader, fragmentShader) {
+export function loadProgram(gl, vertexShader, fragmentShader) {
 	const program = gl.createProgram();
-	const vsh = await loadShader(gl, gl.VERTEX_SHADER, vertexShader);
-	const fsh = await loadShader(gl, gl.FRAGMENT_SHADER, fragmentShader);
+	const vsh = loadShader(gl, gl.VERTEX_SHADER, vertexShader);
+	const fsh = loadShader(gl, gl.FRAGMENT_SHADER, fragmentShader);
 
 	gl.attachShader(program, vsh);
 	gl.attachShader(program, fsh);
@@ -19,12 +19,9 @@ export async function loadProgram(gl, vertexShader, fragmentShader) {
 	return program;
 }
 
-async function loadShader(gl, type, source) {
+export function loadShader(gl, type, source) {
 	const shader = gl.createShader(type);
-	await fetch(source)
-		.then(res => res.text())
-		.then(text => gl.shaderSource(shader, text))
-		.catch(e => console.log(e));
+	gl.shaderSource(shader, source);
 
 	gl.compileShader(shader);
 	if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
