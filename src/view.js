@@ -115,13 +115,13 @@ async function start() {
 	const propertiesContainer = document.createElement("div");
 	propertiesContainer.className = "properties";
 	for (const propertyConfig of tutorialConfig.properties) {
-		const property = new Property(propertyConfig.name);
+		const property = new Property(propertyConfig.id);
 		properties.set(property.name, property);
 
 		const propertyContainer = document.createElement("div");
 		propertyContainer.className = "property";
 		propertyContainer.appendChild(createElement("label", label => {
-			label.textContent = propertyConfig.name;
+			label.textContent = property.name;
 		}));
 		if (propertyConfig.input_presets && propertyConfig["preset_0"]) {
 			propertyContainer.appendChild(createElement("select", select => {
