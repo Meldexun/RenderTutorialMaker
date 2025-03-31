@@ -6,29 +6,25 @@ module.exports = {
 	context: path.resolve(__dirname, 'src'),
 	entry: {
 		edit: {
-			import: './edit.js',
-			filename: 'edit.js'
+			import: './js/edit.js',
+			filename: 'js/edit.js'
 		},
 		view: {
-			import: './view.js',
-			filename: 'view.js'
+			import: './js/view.js',
+			filename: 'js/view.js'
 		}
 	},
 	plugins: [
 		new CopyPlugin({
 			patterns: [
-				'models/**/*',
+//				'models/**/*',
 				'shaders/**/*',
 				{
-					from: 'tutorials/projection/**/*',
+					from: 'tutorials/**/*',
 					info: { minimized: true }
 				},
-				'edit.css',
-				'edit.html',
-				'index.css',
-				'index.html',
-				'view.css',
-				'view.html'
+				'**/*.css',
+				'**/*.ejs'
 			]
 		})
 	],

@@ -7,3 +7,8 @@ node_modules
 
 # webpack
 dist
+
+# dotenv
+.env
+
+userdata
