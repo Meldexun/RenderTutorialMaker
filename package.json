@@ -12,6 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "@codemirror/lang-javascript": "^6.2.3",
+    "@loaders.gl/core": "^4.3.3",
+    "@loaders.gl/gltf": "^4.3.3",
     "bcryptjs": "^3.0.2",
     "codemirror": "^6.0.1",
     "dotenv": "^16.4.7",
