@@ -3,32 +3,32 @@
 
 <head>
 	<meta charset="utf-8" />
+	<link rel="stylesheet" href="global.css">
 	<link rel="stylesheet" href="index.css">
 	<title>Render Tutorial Maker</title>
 </head>
 
 <body>
-	<div id="body">
-		<header><%- include('header.ejs'); %></header>
-		<main>
-			<section>
-				<h2>Example Tutorials</h2>
-				<p><a href="/view?id=fog" title="Fog Tutorial">Fog Tutorial</a></p>
-				<p><a href="/view?id=projection" title="Projection Tutorial">Projection Tutorial</a></p>
-				<p><a href="/view?id=texture" title="Texture Tutorial">Texture Tutorial</a></p>
+	<header><%- include('header.ejs'); %></header>
+	<main>
+		<section>
+			<h2>Featured Tutorials</h2>
+			<p><a href="/view?id=fog" title="Fog Tutorial">Fog Tutorial</a></p>
+			<p><a href="/view?id=projection" title="Projection Tutorial">Projection Tutorial</a></p>
+			<p><a href="/view?id=texture" title="Texture Tutorial">Texture Tutorial</a></p>
 
-				<hr>
+			<hr>
 
-				<h2>User Tutorials</h2>
-				<p>Coming soon</p>
-			</section>
-			<section>
-				<h1>Tutorial Editor</h1>
-				<p>Create your own tutorial.</p>
-				<p><a href="/edit" title="Open Tutorial Editor">Open Tutorial Editor</a></p>
-			</section>
-		</main>
-		<footer><%- include('footer.ejs'); %></footer>
+			<h2>User Tutorials</h2>
+			<p>Coming soon</p>
+		</section>
+		<section>
+			<h1>Tutorial Editor</h1>
+			<p>Create your own tutorial.</p>
+			<p><a href="/edit" title="Open Tutorial Editor">Open Tutorial Editor</a></p>
+		</section>
+	</main>
+	<footer><%- include('footer.ejs'); %></footer>
 </body>
 
 </html>

@@ -3,45 +3,44 @@
 
 <head>
 	<meta charset="utf-8" />
+	<link rel="stylesheet" href="global.css">
 	<link rel="stylesheet" href="edit.css">
 	<title>Editor</title>
 	<script src="edit.js" type="module"></script>
 </head>
 
 <body>
-	<div id="body">
-		<header><%- include('header.ejs'); %></header>
-		<main>
-			<h1>Tutorial Editor</h1>
-			<form id="form" method="POST" action="/api/endpoint">
-				<div class="tutorial-header">
-					<div class="tutorial-name">
-						<label for="name">Name</label>
-						<input type="text" id="name" name="name" value="Unnamed Tutorial">
-					</div>
-					<div class="buttons">
-						<button id="save" type="button">Save</button>
-						<button id="delete" type="button">Delete</button>
-					</div>
+	<header><%- include('header.ejs'); %></header>
+	<main>
+		<h1>Tutorial Editor</h1>
+		<form id="form" method="POST" action="/api/endpoint">
+			<div class="tutorial-header">
+				<div class="tutorial-name">
+					<label for="name">Name</label>
+					<input type="text" id="name" name="name" value="Unnamed Tutorial">
 				</div>
-				<div class="views-container">
-					<div class="views-header">
-						<h3>Views</h3>
-						<button id="add_view" type="button">Add</button>
-					</div>
-					<div id="views"></div>
+				<div class="buttons">
+					<button id="save" type="button">Save</button>
+					<button id="delete" type="button">Delete</button>
 				</div>
-				<div class="properties-container">
-					<div class="properties-header">
-						<h3>Properties</h3>
-						<button id="add_property" type="button">Add</button>
-					</div>
-					<div id="properties"></div>
+			</div>
+			<div class="views-container">
+				<div class="views-header">
+					<h3>Views</h3>
+					<button id="add_view" type="button">Add</button>
 				</div>
-			</form>
-		</main>
-		<footer><%- include('footer.ejs'); %></footer>
-	</div>
+				<div id="views"></div>
+			</div>
+			<div class="properties-container">
+				<div class="properties-header">
+					<h3>Properties</h3>
+					<button id="add_property" type="button">Add</button>
+				</div>
+				<div id="properties"></div>
+			</div>
+		</form>
+	</main>
+	<footer><%- include('footer.ejs'); %></footer>
 </body>
 
 </html>

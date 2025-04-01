@@ -1,0 +1,80 @@
+html {
+	color-scheme: dark;
+}
+
+body {
+	font-family: JetBrains Mono, monospace;
+	font-size: 10pt;
+	line-height: 150%;
+	margin: 0;
+	color: #e0e2e4;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+header {
+	background: #181d1f;
+	color: #ccc;
+	padding: 5px 20px;
+	box-shadow: 0 0 4px #130b00;
+	line-height: 100%;
+	display: flex;
+	justify-content: space-between;
+
+	form {
+		display: flex;
+		justify-content: space-between;
+		flex-direction: column;
+
+		.error {
+			color: red;
+		}
+	}
+
+	#login {
+		width: 200px;
+
+		>* {
+			margin: 2px;
+		}
+	}
+
+	#logout {
+		font-size: 12pt;
+		width: 150px;
+
+		>* {
+			margin: 5px;
+		}
+	}
+}
+
+main {
+	display: flex;
+	flex-direction: column;
+	padding: 0 20px 20px;
+	flex-grow: 1;
+}
+
+footer {
+	background: #181d1f;
+	color: #888;
+	padding: 20px;
+	box-shadow: 0 0 4px #130b00;
+	line-height: 100%;
+	text-align: right;
+}
+
+a:active,
+a:hover,
+a:link,
+a:visited {
+	color: #f77669;
+	text-decoration: none;
+}
+
+a:active,
+a:hover {
+	border-bottom: 1px solid #f77669
+}

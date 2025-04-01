@@ -1,45 +1,5 @@
-html {
-	color-scheme: dark;
-}
-
-body {
-	font-family: JetBrains Mono, monospace;
-	font-size: 10pt;
-	line-height: 150%;
-	margin: 0;
-	background: #0D1117;
-	color: #e0e2e4;
-}
-
-#body {
-	display: flex;
-	flex-direction: column;
-	min-height: 100vh;
-}
-
-header {
-	background: #010409;
-	color: #15B8D8;
-	padding: 5px 20px;
-	margin: 0;
-	box-shadow: 0 0 4px #130b00;
-	line-height: 100%;
-
-	a:active,
-	a:hover,
-	a:link,
-	a:visited {
-		color: #15B8D8;
-		text-decoration: none;
-	}
-}
-
 main {
 	background: #0D1117;
-	display: flex;
-	flex-direction: column;
-	padding: 0 20px 20px;
-	flex-grow: 1;
 	width: 60%;
 	align-self: center;
 
@@ -114,28 +74,18 @@ main {
 			align-items: flex-start;
 		}
 	}
-}
 
-footer {
-	background: #010409;
-	color: #9198A1;
-	padding: 20px;
-	margin: 0;
-	box-shadow: 0 0 4px #130b00;
-	line-height: 100%;
-	text-align: right;
-}
+	.cm-editor {
+		background-color: #1E1F22;
+		height: 50vh
+	}
 
-.cm-editor {
-	background-color: #1E1F22;
-	height: 50vh
-}
+	.cm-gutter {
+		background-color: #1E1F22;
+		color: #77919A
+	}
 
-.cm-gutter {
-	background-color: #1E1F22;
-	color: #77919A
-}
-
-.cm-activeLineGutter {
-	background-color: #1E1F22;
+	.cm-activeLineGutter {
+		background-color: #1E1F22;
+	}
 }
