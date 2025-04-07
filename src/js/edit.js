@@ -348,7 +348,7 @@ document.getElementById("save").onclick = async () => {
 	const formData = new FormData(document.getElementById("form"));
 	console.log("Sending data...");
 	console.log(formData);
-	await fetch('/api/endpoint', { method: "POST", body: formData });
+	await fetch('/save', { method: "POST", body: formData });
 	console.log("Data sent")
 };
 
