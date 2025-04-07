@@ -36,16 +36,10 @@ app.use(session({
 }));
 
 // make user data available
-app.use(express.static("userdata/models"));
-app.use(express.static("userdata/shaders"));
-app.use(express.static("userdata/tutorials"));
+app.use(express.static("userdata"));
 
 // make default asset files available
-app.use(express.static("dist/models"));
-app.use(express.static("dist/shaders"));
-app.use(express.static("dist/css"));
-app.use(express.static("dist/js"));
-app.use(express.static("dist/tutorials"));
+app.use(express.static("dist"));
 
 // make pages available
 function render(req, res, view) {
@@ -62,7 +56,7 @@ app.get("/edit", (req, res) => render(req, res, "edit.ejs"));
 app.get("/profile", (req, res) => render(req, res, "profile.ejs"));
 
 // handle register/login/logout requests
-const userDataFile = path.join(__dirname, "userdata", "users.json");
+const userDataFile = path.join(__dirname, "users.json");
 let users = fs.existsSync(userDataFile) ? JSON.parse(fs.readFileSync(userDataFile)) : {};
 function saveUsers(modified) {
 	if (users !== modified) {
