@@ -271,6 +271,7 @@ app.post("/save", multer().none(), (req, res) => {
 
 		// everything saved successfully into temp folder -> move into target tutorial folder
 		const target = path.join(__dirname, "userdata", "tutorials", user, body.name);
+		fs.mkdirSync(target, { recursive: true });
 		if (fs.existsSync(target)) {
 			fs.rmSync(target, { recursive: true });
 		}
