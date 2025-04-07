@@ -1,5 +1,7 @@
-const { EditorView, basicSetup } = require("codemirror");
-const { javascript } = require("@codemirror/lang-javascript");
+import { EditorView, basicSetup } from "codemirror";
+import { javascript } from "@codemirror/lang-javascript";
+import { autocomplete_js } from "./util/autocomplete_js";
+import { githubDark } from '@uiw/codemirror-theme-github';
 
 class View {
 
@@ -59,8 +61,7 @@ class View {
 		this.init.container.className = "input-multiline";
 		this.initEditor = new EditorView({
 			parent: this.init.container,
-			extensions: [basicSetup, javascript()],
-			doc: "..."
+			extensions: [basicSetup, javascript(), autocomplete_js, githubDark]
 		});
 
 		this.loop = new LabeledInput("Loop", "view_" + id + "_loop", "textarea", loop => {
@@ -69,8 +70,7 @@ class View {
 		this.loop.container.className = "input-multiline";
 		this.loopEditor = new EditorView({
 			parent: this.loop.container,
-			extensions: [basicSetup, javascript()],
-			doc: "..."
+			extensions: [basicSetup, javascript(), autocomplete_js, githubDark]
 		});
 
 		this.presetDialog = createElement("dialog", dialog => {
