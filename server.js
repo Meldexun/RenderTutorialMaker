@@ -54,6 +54,7 @@ app.get("/", (req, res) => render(req, res, "index.ejs"));
 app.get("/view", (req, res) => render(req, res, "view.ejs"));
 app.get("/edit", (req, res) => render(req, res, "edit.ejs"));
 app.get("/profile", (req, res) => render(req, res, "profile.ejs"));
+app.get("/credits", (req, res) => render(req, res, "credits.ejs"));
 
 // handle register/login/logout requests
 const userDataFile = path.join(__dirname, "users.json");
