@@ -5,6 +5,7 @@
 	// setup projection matrix and view matrix
 	const projectionMatrix = this.projection;
 	const viewMatrix = this.getCamera3D();
+	const modelMatrix = properties.get("Model Matrix").getValue();
 
 	// render object
 	gl.useProgram(this.objectRenderer.program);
@@ -12,7 +13,7 @@
 	gl.uniformMatrix4fv(this.objectRenderer.u_ViewMatrix, false, viewMatrix);
 	const model = this.modelProvider.getModel();
 	if (model != null) {
-		renderGLTF(gl, model);
+		renderGLTF(gl, model, modelMatrix);
 	}
 	gl.useProgram(null);
 

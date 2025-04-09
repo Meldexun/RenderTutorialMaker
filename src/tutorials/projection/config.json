@@ -1,7 +1,6 @@
 {
 	"title": "Projection Tutorial",
 	"description": "This is a projection tutorial",
-	"credits": "",
 	"views": [
 		{
 			"name": "World Space View",
@@ -16,27 +15,92 @@
 	],
 	"properties": [
 		{
+			"name": "Model",
+			"type": "string (single-line)",
+			"default": "\"models/mouse/scene.gltf\"",
+			"presets": [
+				{
+					"name": "Farm",
+					"value": "\"models/farm/scene.gltf\""
+				},
+				{
+					"name": "Forest",
+					"value": "\"models/forest/scene.gltf\""
+				},
+				{
+					"name": "Helmet",
+					"value": "\"models/helmet/scene.gltf\""
+				},
+				{
+					"name": "Male",
+					"value": "\"models/male/scene.gltf\""
+				},
+				{
+					"name": "Mouse",
+					"value": "\"models/mouse/scene.gltf\""
+				},
+				{
+					"name": "Ship",
+					"value": "\"models/ship/scene.gltf\""
+				}
+			]
+		},
+		{
 			"name": "Projection Matrix",
 			"type": "mat4",
-			"default": "mat4.perspective(mat4.create(), toRadian(60.0), 16.0 / 9.0, 0.5, 100.0)",
+			"default": "mat4.perspective(mat4.create(), toRadian(70.0), 640.0 / 360.0, 1.0, 100.0)",
+			"min": -10.0,
+			"max": 10.0,
 			"step": 0.01,
 			"presets": [
 				{
-					"name": "mat4.perspective(mat4.create(), toRadian(60.0), 16.0 / 9.0, 0.5, 100.0)",
-					"value": "mat4.perspective(mat4.create(), toRadian(60.0), 16.0 / 9.0, 0.5, 100.0)"
+					"name": "Perspective",
+					"value": "mat4.perspective(mat4.create(), toRadian(70.0), 16.0 / 9.0, 1.0, 100.0)"
+				},
+				{
+					"name": "Perspective (Wide)",
+					"value": "mat4.perspective(mat4.create(), toRadian(110.0), 16.0 / 9.0, 1.0, 100.0)"
+				},
+				{
+					"name": "Orthographic",
+					"value": "mat4.ortho(mat4.create(), -10.0, 10.0, -10.0, 10.0, 1.0, 100.0)"
 				}
 			],
-			"input_number": true
+			"input_number": true,
+			"input_slider": true
 		},
 		{
 			"name": "View Matrix",
 			"type": "mat4",
-			"default": "mat4.translate(mat4.create(), mat4.create(), vec3.set(vec3.create(), 0.0, -10.0, -40.0))",
+			"default": "mat4.create()",
+			"min": -1000.0,
+			"max": 1000.0,
+			"step": 0.01,
+			"input_number": true
+		},
+		{
+			"name": "Model Matrix",
+			"type": "mat4",
+			"default": "mat4.create()",
+			"min": -10.0,
+			"max": 10.0,
 			"step": 0.01,
 			"presets": [
 				{
-					"name": "mat4.translate(mat4.create(), mat4.create(), vec3.set(vec3.create(), 0.0, -10.0, -40.0))",
-					"value": "mat4.translate(mat4.create(), mat4.create(), vec3.set(vec3.create(), 0.0, -10.0, -40.0))"
+					"name": "Default",
+					"value": "mat4.create()"
+				},
+				{
+					"name": "Move up by 2",
+					"value": "mat4.fromTranslation(mat4.create(), [0.0, 2.0, 0.0])"
+				},
+				{
+					"name": "Rotate by 60° around Y-Axis",
+					"value": "mat4.fromYRotation(mat4.create(), toRadian(60.0))"
+				},
+				{
+					"name": "Scale by 25%",
+					"value": "mat4.fromScaling(mat4.create(), [1.25, 1.25, 1.25])"
 				}
 			],
 			"input_number": true,
