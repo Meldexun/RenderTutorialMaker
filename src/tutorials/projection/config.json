@@ -1,24 +1,46 @@
 {
 	"title": "Projection Tutorial",
+	"description": "This is a projection tutorial",
+	"credits": "",
 	"views": [
 		{
-			"id": "third_person",
-			"type": "custom",
+			"name": "World Space View",
 			"width": 640,
 			"height": 360
 		},
 		{
-			"id": "first_person",
-			"type": "custom",
+			"name": "Screen Space View",
 			"width": 640,
 			"height": 360
 		}
 	],
 	"properties": [
 		{
-			"name": "Projection",
+			"name": "Projection Matrix",
 			"type": "mat4",
-			"default": "perspective(60.0, 16.0 / 9.0, 0.5, 10.0)"
+			"default": "mat4.perspective(mat4.create(), toRadian(60.0), 16.0 / 9.0, 0.5, 100.0)",
+			"step": 0.01,
+			"presets": [
+				{
+					"name": "mat4.perspective(mat4.create(), toRadian(60.0), 16.0 / 9.0, 0.5, 100.0)",
+					"value": "mat4.perspective(mat4.create(), toRadian(60.0), 16.0 / 9.0, 0.5, 100.0)"
+				}
+			],
+			"input_number": true
+		},
+		{
+			"name": "View Matrix",
+			"type": "mat4",
+			"default": "mat4.translate(mat4.create(), mat4.create(), vec3.set(vec3.create(), 0.0, -10.0, -40.0))",
+			"step": 0.01,
+			"presets": [
+				{
+					"name": "mat4.translate(mat4.create(), mat4.create(), vec3.set(vec3.create(), 0.0, -10.0, -40.0))",
+					"value": "mat4.translate(mat4.create(), mat4.create(), vec3.set(vec3.create(), 0.0, -10.0, -40.0))"
+				}
+			],
+			"input_number": true,
+			"input_slider": true
 		}
 	]
 }
