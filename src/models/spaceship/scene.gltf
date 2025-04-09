@@ -1,0 +1,715 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 7960,
+      "max": [
+        0.7249259948730469,
+        0.47198501229286194,
+        1.6431000232696533
+      ],
+      "min": [
+        -2.364229917526245,
+        -0.142194002866745,
+        -1.687559962272644
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 95520,
+      "componentType": 5126,
+      "count": 7960,
+      "max": [
+        1.0,
+        1.0,
+        0.9999991059303284
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -0.9999991059303284
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 7960,
+      "max": [
+        1.0,
+        0.999999463558197,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 7960,
+      "max": [
+        0.9988309741020203,
+        0.9976649880409241
+      ],
+      "min": [
+        0.0022386799100786448,
+        0.0021267400588840246
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 23766,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 191040,
+      "componentType": 5126,
+      "count": 42,
+      "max": [
+        2.467780113220215,
+        0.43810901045799255,
+        0.23595400154590607
+      ],
+      "min": [
+        1.1938600540161133,
+        -0.01772640086710453,
+        -0.2580449879169464
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 191544,
+      "componentType": 5126,
+      "count": 42,
+      "max": [
+        0.950983464717865,
+        0.9953328967094421,
+        0.9904041290283203
+      ],
+      "min": [
+        -0.1209869384765625,
+        -0.8781582117080688,
+        -0.9924043416976929
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "byteOffset": 127360,
+      "componentType": 5126,
+      "count": 42,
+      "max": [
+        0.6537247896194458,
+        0.7056899666786194,
+        0.992717981338501,
+        1.0
+      ],
+      "min": [
+        -0.9981189370155334,
+        -0.5369362235069275,
+        -0.5112207531929016,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 63680,
+      "componentType": 5126,
+      "count": 42,
+      "max": [
+        0.9948539733886719,
+        0.9978139996528625
+      ],
+      "min": [
+        0.0014051400357857347,
+        0.0019416899885982275
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 95064,
+      "componentType": 5125,
+      "count": 150,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 192048,
+      "componentType": 5126,
+      "count": 4842,
+      "max": [
+        2.5460100173950195,
+        0.5366979837417603,
+        0.42884698510169983
+      ],
+      "min": [
+        0.01158860046416521,
+        -0.02756889909505844,
+        -0.4733090102672577
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 250152,
+      "componentType": 5126,
+      "count": 4842,
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "byteOffset": 128032,
+      "componentType": 5126,
+      "count": 4842,
+      "max": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -0.9999831914901733,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 64016,
+      "componentType": 5126,
+      "count": 4842,
+      "max": [
+        0.998354971408844,
+        0.9971609711647034
+      ],
+      "min": [
+        0.0030573001131415367,
+        0.002754800021648407
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 95664,
+      "componentType": 5125,
+      "count": 16260,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 308256,
+      "componentType": 5126,
+      "count": 3282,
+      "max": [
+        1.5343400239944458,
+        0.5914220213890076,
+        0.8173869848251343
+      ],
+      "min": [
+        -2.533989906311035,
+        -0.05289819836616516,
+        -0.8618490099906921
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 347640,
+      "componentType": 5126,
+      "count": 3282,
+      "max": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "byteOffset": 205504,
+      "componentType": 5126,
+      "count": 3282,
+      "max": [
+        1.0,
+        0.9999998807907104,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -1.0,
+        -0.9999985694885254,
+        -0.9999973177909851,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 102752,
+      "componentType": 5126,
+      "count": 3282,
+      "max": [
+        0.9991170167922974,
+        0.9989579916000366
+      ],
+      "min": [
+        0.0023002000525593758,
+        0.0012223799712955952
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 160704,
+      "componentType": 5125,
+      "count": 9624,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "Mark Bai (https://sketchfab.com/bcfbox)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/northstar-fighter-ship-a45170bb77fc4c568b7d94050ecbf54c",
+      "title": "Northstar fighter ship"
+    },
+    "generator": "Sketchfab-12.67.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 199200,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 129008,
+      "byteOffset": 199200,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 387024,
+      "byteOffset": 328208,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 258016,
+      "byteOffset": 715232,
+      "byteStride": 16,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 973248,
+      "uri": "scene.bin"
+    }
+  ],
+  "images": [
+    {
+      "uri": "textures/Northstar_L_ji_shen_baseColor.jpeg"
+    },
+    {
+      "uri": "textures/Northstar_L_ji_shen_metallicRoughness.png"
+    },
+    {
+      "uri": "textures/Northstar_L_ji_shen_emissive.jpeg"
+    },
+    {
+      "uri": "textures/Northstar_L_ji_shen_normal.png"
+    },
+    {
+      "uri": "textures/Northstar_L_ji_cang_baseColor.png"
+    },
+    {
+      "uri": "textures/Northstar_L_ji_cang_metallicRoughness.png"
+    },
+    {
+      "uri": "textures/Northstar_L_ji_cang_emissive.jpeg"
+    },
+    {
+      "uri": "textures/Northstar_L_ji_cang_normal.png"
+    },
+    {
+      "uri": "textures/Northstar_L_bo_li_baseColor.png"
+    },
+    {
+      "uri": "textures/Northstar_L_bo_li_metallicRoughness.png"
+    },
+    {
+      "uri": "textures/Northstar_L_bo_li_normal.png"
+    },
+    {
+      "uri": "textures/Northstar_L_chi_bang_baseColor.jpeg"
+    },
+    {
+      "uri": "textures/Northstar_L_chi_bang_metallicRoughness.png"
+    },
+    {
+      "uri": "textures/Northstar_L_chi_bang_normal.png"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "emissiveFactor": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "emissiveTexture": {
+        "index": 2
+      },
+      "name": "Northstar_L_ji_shen",
+      "normalTexture": {
+        "index": 3
+      },
+      "occlusionTexture": {
+        "index": 1
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicRoughnessTexture": {
+          "index": 1
+        }
+      }
+    },
+    {
+      "alphaMode": "BLEND",
+      "doubleSided": true,
+      "emissiveFactor": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "emissiveTexture": {
+        "index": 6
+      },
+      "name": "Northstar_L_ji_cang",
+      "normalTexture": {
+        "index": 7
+      },
+      "occlusionTexture": {
+        "index": 5
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 4
+        },
+        "metallicRoughnessTexture": {
+          "index": 5
+        }
+      }
+    },
+    {
+      "alphaMode": "BLEND",
+      "doubleSided": true,
+      "name": "Northstar_L_bo_li",
+      "normalTexture": {
+        "index": 10
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 8
+        },
+        "metallicRoughnessTexture": {
+          "index": 9
+        }
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Northstar_L_chi_bang",
+      "normalTexture": {
+        "index": 13
+      },
+      "occlusionTexture": {
+        "index": 12
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 11
+        },
+        "metallicRoughnessTexture": {
+          "index": 12
+        }
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "defaultMaterial",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 4,
+          "material": 3,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "defaultMaterial",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 6,
+            "POSITION": 5,
+            "TANGENT": 7,
+            "TEXCOORD_0": 8
+          },
+          "indices": 9,
+          "material": 2,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "defaultMaterial",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 11,
+            "POSITION": 10,
+            "TANGENT": 12,
+            "TEXCOORD_0": 13
+          },
+          "indices": 14,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "defaultMaterial",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 16,
+            "POSITION": 15,
+            "TANGENT": 17,
+            "TEXCOORD_0": 18
+          },
+          "indices": 19,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2,
+        4,
+        6,
+        8
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -4.371139006309477e-08,
+        0.999999999999999,
+        0.0,
+        0.0,
+        -0.999999999999999,
+        -4.371139006309477e-08,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Collada visual scene group"
+    },
+    {
+      "children": [
+        3
+      ],
+      "name": "Northstar_L"
+    },
+    {
+      "mesh": 0,
+      "name": "defaultMaterial"
+    },
+    {
+      "children": [
+        5
+      ],
+      "name": "Northstar_L"
+    },
+    {
+      "mesh": 1,
+      "name": "defaultMaterial"
+    },
+    {
+      "children": [
+        7
+      ],
+      "name": "Northstar_L"
+    },
+    {
+      "mesh": 2,
+      "name": "defaultMaterial"
+    },
+    {
+      "children": [
+        9
+      ],
+      "name": "Northstar_L"
+    },
+    {
+      "mesh": 3,
+      "name": "defaultMaterial"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    },
+    {
+      "sampler": 0,
+      "source": 3
+    },
+    {
+      "sampler": 0,
+      "source": 4
+    },
+    {
+      "sampler": 0,
+      "source": 5
+    },
+    {
+      "sampler": 0,
+      "source": 6
+    },
+    {
+      "sampler": 0,
+      "source": 7
+    },
+    {
+      "sampler": 0,
+      "source": 8
+    },
+    {
+      "sampler": 0,
+      "source": 9
+    },
+    {
+      "sampler": 0,
+      "source": 10
+    },
+    {
+      "sampler": 0,
+      "source": 11
+    },
+    {
+      "sampler": 0,
+      "source": 12
+    },
+    {
+      "sampler": 0,
+      "source": 13
+    }
+  ]
+}

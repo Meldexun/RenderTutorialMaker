@@ -1,0 +1,11 @@
+Model Information:
+* title:	Northstar fighter ship
+* source:	https://sketchfab.com/3d-models/northstar-fighter-ship-a45170bb77fc4c568b7d94050ecbf54c
+* author:	Mark Bai (https://sketchfab.com/bcfbox)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Northstar fighter ship" (https://sketchfab.com/3d-models/northstar-fighter-ship-a45170bb77fc4c568b7d94050ecbf54c) by Mark Bai (https://sketchfab.com/bcfbox) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
