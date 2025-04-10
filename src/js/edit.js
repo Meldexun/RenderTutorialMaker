@@ -304,10 +304,10 @@ class Property {
 			result.input_number = this.input_number.checkbox.checked;
 			result.input_slider = this.input_slider.checkbox.checked;
 		}
-		if (this.type.element.value === "boolean") {
+		if (this.type.element.value === "string (single-line)") {
 			result.input_text = this.input_text.checkbox.checked;
 		}
-		if (this.type.element.value === "boolean") {
+		if (this.type.element.value === "string (multi-line)") {
 			result.input_textarea = this.input_textarea.checkbox.checked;
 		}
 		// presets
