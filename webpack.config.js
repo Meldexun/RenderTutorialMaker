@@ -17,7 +17,8 @@ module.exports = {
 	plugins: [
 		new CopyPlugin({
 			patterns: [
-//				'models/**/*',
+				'models/**/*',
+				'textures/**/*',
 				'shaders/**/*',
 				{
 					from: 'tutorials/**/*',
