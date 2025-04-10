@@ -1,28 +1,35 @@
 import { EditorView, basicSetup } from "codemirror";
+import { html } from "@codemirror/lang-html";
 import { javascript } from "@codemirror/lang-javascript";
 import { autocomplete_js } from "./util/autocomplete_js";
 import { githubDark } from '@uiw/codemirror-theme-github';
 
+// create html editor for tutorial description
+new EditorView({
+	parent: document.getElementById("description").parentNode,
+	extensions: [basicSetup, html(), githubDark, EditorView.updateListener.of(update => {
+		if (update.docChanged) {
+			document.getElementById("description").value = update.state.doc;
+		}
+	})]
+});
+
 class View {
 
-	constructor(id) {
+	constructor() {
 		this.header = createElement("div", header => {
 			header.className = "view-header";
-			header.appendChild(createElement("input", element => {
-				element.id = "view_" + id + "_name";
-				element.name = "view_" + id + "_name";
-				element.type = "text";
-				element.value = "Unnamed View";
+
+			// create width input
+			header.appendChild(this.name = createElement("input", name => {
+				name.type = "text";
+				name.value = "Unnamed View";
+				name.required = true;
 			}));
+
+			// create collapse and delete button
 			header.appendChild(createElement("div", buttons => {
 				buttons.className = "buttons";
-				buttons.appendChild(createElement("button", button => {
-					button.type = "button";
-					button.textContent = "Load Preset";
-					button.onclick = () => {
-						this.presetDialog.showModal();
-					};
-				}));
 				buttons.appendChild(createElement("button", button => {
 					button.type = "button";
 					button.textContent = "Collapse";
@@ -35,67 +42,52 @@ class View {
 					button.textContent = "Delete";
 					button.onclick = () => {
 						this.container.remove();
+						const index = views.indexOf(this);
+						if (index >= 0) {
+							views.splice(index, 1);
+						}
 					};
 				}));
 			}));
 		});
+
 		this.main = createElement("div", main => {
 			main.className = "view-main";
 		});
 
-		this.width = new LabeledInput("Width", "view_" + id + "_width", "input", width => {
+		// create width input
+		this.width = new LabeledElement("Width", "input", width => {
 			width.type = "number";
 			width.value = 600;
+			width.required = true;
 		});
 		this.width.container.className = "input-oneline";
 
-		this.height = new LabeledInput("Height", "view_" + id + "_height", "input", height => {
+		// create height input
+		this.height = new LabeledElement("Height", "input", height => {
 			height.type = "number";
 			height.value = 400;
+			height.required = true;
 		});
 		this.height.container.className = "input-oneline";
 
-		this.init = new LabeledInput("Init", "view_" + id + "_init", "textarea", init => {
-			init.hidden = true;
-		});
-		this.init.container.className = "input-multiline";
-		this.initEditor = new EditorView({
-			parent: this.init.container,
-			extensions: [basicSetup, javascript(), autocomplete_js, githubDark]
-		});
+		// create init code editor
+		this.init = new LabeledEditor("Initialization Code", container => {
+			return {
+				parent: container,
+				extensions: [basicSetup, javascript(), autocomplete_js, githubDark]
+			}
+		})
 
-		this.loop = new LabeledInput("Loop", "view_" + id + "_loop", "textarea", loop => {
-			loop.hidden = true;
-		});
-		this.loop.container.className = "input-multiline";
-		this.loopEditor = new EditorView({
-			parent: this.loop.container,
-			extensions: [basicSetup, javascript(), autocomplete_js, githubDark]
-		});
+		// create render code editor
+		this.loop = new LabeledEditor("Render Code", container => {
+			return {
+				parent: container,
+				extensions: [basicSetup, javascript(), autocomplete_js, githubDark]
+			}
+		})
 
-		this.presetDialog = createElement("dialog", dialog => {
-			const selection = createElement("select", select => {
-				addOption(select, "Preset 1");
-				addOption(select, "Preset 2");
-			});
-			dialog.appendChild(selection);
-			dialog.appendChild(createElement("button", button => {
-				button.type = "button";
-				button.textContent = "Load";
-				button.onclick = () => {
-					this.init.input.value = selection.value;
-					this.loop.input.value = selection.value;
-					dialog.close();
-				};
-			}));
-			dialog.appendChild(createElement("button", button => {
-				button.type = "button";
-				button.textContent = "Cancel";
-				button.onclick = () => {
-					dialog.close();
-				};
-			}));
-		});
+		// build container for this view
 		this.container = createElement("div", container => {
 			container.className = "view";
 			container.appendChild(this.header);
@@ -104,40 +96,17 @@ class View {
 			this.main.appendChild(this.height.container);
 			this.main.appendChild(this.init.container);
 			this.main.appendChild(this.loop.container);
-			container.appendChild(this.presetDialog);
 		});
 	}
 
 	toObject() {
-		const obj = new Object();
-		obj.name = this.name.input.value;
-		obj.width = this.width.input.value;
-		obj.height = this.height.input.value;
-		obj.type = this.type.input.value;
-		for (const attribute of this.attributes) {
-			obj[attribute.input.id] = attribute.input.value;
-		}
-		return obj;
-	}
-
-}
-
-class LabeledInput {
-
-	constructor(labelText, id, inputType, initInput = _ => { }) {
-		this.label = createElement("label", label => {
-			label.for = id;
-			label.innerText = labelText;
-		});
-		this.input = createElement(inputType, input => {
-			input.id = id;
-			input.name = id;
-			initInput(input);
-		});
-		this.container = createElement("div", container => {
-			container.appendChild(this.label);
-			container.appendChild(this.input);
-		});
+		return {
+			name: this.name.value,
+			width: Number(this.width.element.value),
+			height: Number(this.height.element.value),
+			init: this.init.editor.state.doc.toString(),
+			loop: this.loop.editor.state.doc.toString()
+		};
 	}
 
 }
@@ -162,7 +131,7 @@ class Property {
 			}));
 		});
 
-		this.type = new LabeledInput("Type", "property_" + id + "_type", "select", type => {
+		this.type = new LabeledElement("Type", "property_" + id + "_type", "select", type => {
 			addOption(type, "boolean");
 			addOption(type, "number");
 			addOption(type, "vec2");
@@ -176,9 +145,9 @@ class Property {
 			type.onchange = () => {
 				switch (type.value) {
 					case "boolean":
-						this.defaultValue.input.value = false;
+						this.defaultValue.element.value = false;
 						this.inputOptions.replaceChildren(
-							createInputOption("property_" + id + "_input_checkbox", "Checkbox", true)
+							createCheckboxWithLabel("property_" + id + "_input_checkbox", "Checkbox", true)
 						);
 						break;
 					case "number":
@@ -190,25 +159,25 @@ class Property {
 					case "mat4":
 						switch (type.value) {
 							case "number":
-								this.defaultValue.input.value = 0;
+								this.defaultValue.element.value = 0;
 								break;
 							case "vec2":
-								this.defaultValue.input.value = "vec2.create()";
+								this.defaultValue.element.value = "vec2.create()";
 								break;
 							case "vec3":
-								this.defaultValue.input.value = "vec3.create()";
+								this.defaultValue.element.value = "vec3.create()";
 								break;
 							case "vec4":
-								this.defaultValue.input.value = "vec4.create()";
+								this.defaultValue.element.value = "vec4.create()";
 								break;
 							case "mat2":
-								this.defaultValue.input.value = "mat2.create()";
+								this.defaultValue.element.value = "mat2.create()";
 								break;
 							case "mat3":
-								this.defaultValue.input.value = "mat3.create()";
+								this.defaultValue.element.value = "mat3.create()";
 								break;
 							case "mat4":
-								this.defaultValue.input.value = "mat4.create()";
+								this.defaultValue.element.value = "mat4.create()";
 								break;
 						}
 						this.inputOptions.replaceChildren(
@@ -220,14 +189,14 @@ class Property {
 								max.type = "number";
 								max.parentNode.className = "input-oneline";
 							}),
-							createInputOption("property_" + id + "_input_number", "Number", true)
+							createCheckboxWithLabel("property_" + id + "_input_number", "Number", true)
 						);
 						if (type.value === "number") {
-							this.inputOptions.appendChild(createInputOption("slider", "Slider"));
+							this.inputOptions.appendChild(createCheckboxWithLabel("slider", "Slider"));
 						}
 						break;
 					case "string (single-line)":
-						this.defaultValue.input.value = "";
+						this.defaultValue.element.value = "";
 						this.inputOptions.replaceChildren(
 							createLabelElementContainer("Language", "property_" + id + "_language", "property_" + id + "_language", "select", language => {
 								language.parentNode.className = "input-oneline";
@@ -235,24 +204,24 @@ class Property {
 								addOption(language, "JavaScript");
 								addOption(language, "GLSL");
 							}),
-							createInputOption("property_" + id + "_input_text", "Text", true)
+							createCheckboxWithLabel("property_" + id + "_input_text", "Text", true)
 						);
 						break;
 					case "string (multi-line)":
-						this.defaultValue.input.value = "";
+						this.defaultValue.element.value = "";
 						this.inputOptions.replaceChildren(
 							createLabelElementContainer("Language", "property_" + id + "_language", "property_" + id + "_language", "select", language => {
 								language.parentNode.className = "input-oneline";
 								addOption(language, "Plain-Text");
 								addOption(language, "JavaScript");
-								addOption(language, "GLSL");
 							}),
-							createInputOption("property_" + id + "_input_textarea", "Text Area", true)
+							createCheckboxWithLabel("property_" + id + "_input_textarea", "Text Area", true)
 						);
 						break;
 					default:
 						break;
 				}
+				// add preset option if type is not boolean
 				if (type.value !== "boolean") {
 					this.inputOptions.appendChild(createElement("div", c => {
 						c.className = "input-oneline presets-input";
@@ -301,7 +270,7 @@ class Property {
 		});
 		this.type.container.className = "input-oneline";
 
-		this.defaultValue = new LabeledInput("Default Value", "property_" + id + "_defaultValue", "input", defaultValue => {
+		this.defaultValue = new LabeledElement("Default Value", "property_" + id + "_defaultValue", "input", defaultValue => {
 			defaultValue.type = "text";
 			defaultValue.value = "";
 		});
@@ -318,7 +287,7 @@ class Property {
 			container.appendChild(this.inputOptions);
 		});
 
-		this.type.input.onchange();
+		this.type.element.onchange();
 	}
 
 }
@@ -326,31 +295,35 @@ class Property {
 const views = [];
 const properties = [];
 
+// create new view when add view button is clicked
 document.getElementById("add_view").onclick = () => {
-	const view = new View(views.length);
+	const view = new View();
 	views.push(view);
-	document.getElementById("views").appendChild(view.container);
+	document.getElementById("views").appendChild(view.container)
 };
 
+// create new property when add property button is clicked
 document.getElementById("add_property").onclick = () => {
-	const property = new Property(properties.length);
+	const property = new Property();
 	properties.push(property);
-	document.getElementById("properties").appendChild(property.container);
+	document.getElementById("properties").appendChild(property.container)
 };
 
-document.getElementById("save").onclick = async () => {
-	for (let view of views) {
-		console.log(view);
-		view.init.input.value = view.initEditor.state.doc;
-		view.loop.input.value = view.loopEditor.state.doc;
-	}
-
+// send save request to server when save button is clicked or ctrl+s is pressed
+document.getElementById("save").onclick = async _ => {
+	console.log(views.map(view => view.toObject()));
 	const formData = new FormData(document.getElementById("form"));
 	console.log("Sending data...");
 	console.log(formData);
 	await fetch('/save', { method: "POST", body: formData });
 	console.log("Data sent")
 };
+document.addEventListener("keydown", ev => {
+	if (ev.ctrlKey && ev.key === "s") {
+		document.getElementById("save").onclick();
+		ev.preventDefault();
+	}
+});
 
 // ---------- Helper Functions ---------- //
 
@@ -360,54 +333,57 @@ function createElement(type, onCreated = _ => { }) {
 	return element;
 }
 
-function createLabelElementContainer(labelText, id, name, type, initElement = _ => { }) {
+class LabeledElement {
+
+	constructor(labelText, type, initElement = _ => { }) {
+		this.container = document.createElement("div");
+		this.label = document.createElement("label");
+		this.label.innerText = labelText;
+		this.element = document.createElement(type);
+		this.container.appendChild(this.label);
+		this.container.appendChild(this.element);
+		initElement(this.element);
+	}
+
+}
+
+class LabeledEditor {
+
+	constructor(labelText, configGenerator = parent => { return { parent: parent } }) {
+		this.container = document.createElement("div");
+		this.label = document.createElement("label");
+		this.label.innerText = labelText;
+		this.container.appendChild(this.label);
+		this.editor = new EditorView(configGenerator(this.container));
+	}
+
+}
+
+function createLabelElementContainer(labelText, type, initElement = _ => { }, initLabel = _ => { }) {
 	const container = document.createElement("div");
 
 	const label = document.createElement("label");
-	label.for = id;
 	label.innerText = labelText;
 	container.appendChild(label);
 
 	const element = document.createElement(type);
-	element.id = id;
-	element.name = name;
 	container.appendChild(element);
 
 	initElement(element);
+	initLabel(label);
 
 	return container;
 }
 
-function createElementLabelContainer(parent, labelText, tagName, id, name, initElement = _ => { }) {
-	const container = document.createElement("div");
-
-	const element = document.createElement(type);
-	element.id = id;
-	element.name = name;
-	container.appendChild(element);
-
-	const label = document.createElement("label");
-	label.for = id;
-	label.innerText = labelText;
-	container.appendChild(label);
-
-	initElement(element);
-
-	return container;
-}
-
-function createInputOption(id, text, checked = false, disabled = false) {
+function createCheckboxWithLabel(labelText, checked = false, disabled = false) {
 	return createElement("div", container => {
 		container.appendChild(createElement("input", input => {
-			input.id = id;
-			input.name = id;
 			input.type = "checkbox";
 			input.checked = checked;
 			input.disabled = disabled;
 		}))
 		container.appendChild(createElement("label", label => {
-			label.for = id;
-			label.innerText = text;
+			label.innerText = labelText;
 		}))
 	})
 }
