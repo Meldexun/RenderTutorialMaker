@@ -46,5 +46,5 @@ vec4 apply_fog(vec4 inColor, float vertexDistance) {
 
 void main() {
     f_Color = texture(u_Texture, v_Texture) * v_Color;
-    f_Color = apply_fog(f_Color, length((u_FogMatrix * vec4(v_Position, 1.0)).xyz));
+    f_Color = apply_fog(f_Color, length(vec3(u_FogMatrix * vec4(v_Position, 1.0))));
 }
