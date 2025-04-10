@@ -67,6 +67,7 @@ app.get("/profile", (req, res) => {
 	}
 });
 app.get("/credits", (req, res) => render(req, res, "credits.ejs"));
+app.get("/documentation", (req, res) => render(req, res, "documentation.ejs"));
 app.get("/login_required", (req, res) => {
 	if (req.session.user) {
 		res.redirect(req.query.redirect || "/");
@@ -94,6 +95,13 @@ function userUnlocked(user) {
 function passwordMatches(user, password) {
 	return bcryptjs.compareSync(password, users[user]);
 }
+function unlockUser(user) {
+	if (!users[user] && users[user] !== "") {
+		const modified = { ...users };
+		modified[user] = "";
+		saveUsers(modified);
+	}
+}
 function registerUser(user, password) {
 	const hash = bcryptjs.hashSync(password);
 	if (users[user] !== hash) {
@@ -103,7 +111,7 @@ function registerUser(user, password) {
 	}
 }
 function resetUser(user) {
-	if (users[user] !== "") {
+	if (users[user]) {
 		const modified = { ...users };
 		modified[user] = "";
 		saveUsers(modified);
@@ -373,12 +381,93 @@ readline.createInterface({
 		case "help":
 			console.log("help - Prints a list of all available commands");
 			console.log("stop - Stops the server");
+			console.log("add_user [user] - Unlock the specified username for registration. The first user that makes a registration request with this username will create a new account.");
+			console.log("reset_user [user] - Reset the password of the specified user. Unlocks the specified username for registration. The user will have to register again.");
+			console.log("delete_user [user] - Delete the specified user and all their tutorials");
+			console.log("delete_tutorial [user] [tutorial] - Delete the specified tutorial of the specified user");
+			console.log("delete_tutorials [user] - Delete all tutorials of the specified user");
 			return;
 		case "stop":
 			console.log("Server stopping...");
 			await http_terminator.createHttpTerminator({ server }).terminate();
 			console.log("Server stopped");
 			process.exit();
+		case "add_user":
+			if (args.length < 2) {
+				console.log("Not enough arguments");
+			}
+			if (userUnlocked(args[1]) || userRegistered(args[1])) {
+				return console.log("User exists already");
+			}
+			try {
+				unlockUser(args[1]);
+				console.log("Added user successfully");
+			} catch (err) {
+				console.log("Failed executing command!");
+				console.log(err);
+			}
+			return;
+		case "reset_user":
+			if (args.length < 2) {
+				console.log("Not enough arguments");
+			}
+			if (!userRegistered(args[1])) {
+				return console.log("User not registered");
+			}
+			try {
+				resetUser(args[1]);
+				console.log("Reseted user successfully");
+			} catch (err) {
+				console.log("Failed executing command!");
+				console.log(err);
+			}
+			return;
+		case "delete_user":
+			if (args.length < 2) {
+				console.log("Not enough arguments");
+			}
+			if (!userRegistered(args[1])) {
+				return console.log("User not registered");
+			}
+			try {
+				deleteUser(args[1]);
+				fs.rmSync(path.join(__dirname, "userdata", "tutorials", args[1]), { recursive: true });
+				console.log("Deleted user successfully");
+			} catch (err) {
+				console.log("Failed executing command!");
+				console.log(err);
+			}
+			return;
+		case "delete_tutorial":
+			if (args.length < 3) {
+				console.log("Not enough arguments");
+			}
+			try {
+				if (!fs.existsSync(path.join(__dirname, "userdata", "tutorials", args[1], args[2]))) {
+					return console.log("Tutorial does not exist");
+				}
+				fs.rmSync(path.join(__dirname, "userdata", "tutorials", args[1], args[2]), { recursive: true });
+				console.log("Tutorial deleted successfully");
+			} catch (err) {
+				console.log("Failed executing command!");
+				console.log(err);
+			}
+			return;
+		case "delete_tutorials":
+			if (args.length < 2) {
+				console.log("Not enough arguments");
+			}
+			try {
+				if (!fs.existsSync(path.join(__dirname, "userdata", "tutorials", args[1]))) {
+					return console.log("User has no tutorials");
+				}
+				fs.rmSync(path.join(__dirname, "userdata", "tutorials", args[1]), { recursive: true });
+				console.log("Tutorials deleted successfully");
+			} catch (err) {
+				console.log("Failed executing command!");
+				console.log(err);
+			}
+			return;
 		default:
 			console.log("Unknown command. Type \"help\" to get a list of all available commands.")
 			return;
