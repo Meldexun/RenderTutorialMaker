@@ -191,6 +191,25 @@ class Property {
 					this.lang.container.style = "";
 				}
 
+				this.input_checkbox.container.style = "display: none";
+				this.input_number.container.style = "display: none";
+				this.input_slider.container.style = "display: none";
+				this.input_text.container.style = "display: none";
+				this.input_textarea.container.style = "display: none";
+				if (type.value === "boolean") {
+					this.input_checkbox.container.style = "";
+				}
+				if (/number|(?:vec|mat)\d/.test(type.value)) {
+					this.input_number.container.style = "";
+					this.input_slider.container.style = "";
+				}
+				if (type.value === "string (single-line)") {
+					this.input_text.container.style = "";
+				}
+				if (type.value === "string (multi-line)") {
+					this.input_textarea.container.style = "";
+				}
+
 				// remove old presets and hide presets for type boolean
 				this.presets.presets.slice().forEach(preset => preset.remove());
 				if (type.value === "boolean") {
@@ -231,10 +250,11 @@ class Property {
 		this.lang.container.className = "input-oneline";
 
 		// create input options (individual options get hidden/shown when type changes)
-		this.inputs = {
-			container: document.createElement("div"),
-			elements: []
-		};
+		this.input_checkbox = new LabeledCheckbox("Checkbox", true, true);
+		this.input_number = new LabeledCheckbox("Number");
+		this.input_slider = new LabeledCheckbox("Slider");
+		this.input_text = new LabeledCheckbox("Text");
+		this.input_textarea = new LabeledCheckbox("Textarea");
 
 		// create preset option (gets hidden when type is boolean)
 		this.presets = new Presets();
@@ -248,7 +268,11 @@ class Property {
 			container.appendChild(this.max.container);
 			container.appendChild(this.step.container);
 			container.appendChild(this.lang.container);
-			container.appendChild(this.inputs.container);
+			container.appendChild(this.input_checkbox.container);
+			container.appendChild(this.input_number.container);
+			container.appendChild(this.input_slider.container);
+			container.appendChild(this.input_text.container);
+			container.appendChild(this.input_textarea.container);
 			container.appendChild(this.presets.container);
 		});
 
@@ -259,31 +283,39 @@ class Property {
 	toObject() {
 		const result = {
 			name: this.name.value,
-			type: this.type.value,
+			type: this.type.element.value,
 			default: this.default.editor.state.doc.toString(),
 		};
-		switch (this.type.value) {
-			case "boolean":
-				break;
-			case "number":
-			case "vec2":
-			case "vec3":
-			case "vec4":
-			case "mat2":
-			case "mat3":
-			case "mat4":
-				result.min = this.min.element.value;
-				result.max = this.max.element.value;
-				result.step = this.step.element.value;
-			case "string (single-line)":
-			case "string (multi-line)":
-				result.presets = this.presets.presets.map(preset => ({
-					name: preset.name.value,
-					value: preset.editor.state.doc.toString()
-				}));
-				break;
-			default:
-				break;
+		// number attributes
+		if (/number|(?:vec|mat)\d/.test(this.type.element.value)) {
+			result.min = Number(this.min.element.value);
+			result.max = Number(this.max.element.value);
+			result.step = Number(this.step.element.value);
+		}
+		// lang
+		if (/string \((?:single|multi)-line\)/.test(this.type.element.value)) {
+			result.language = this.lang.element.value;
+		}
+		// inputs
+		if (this.type.element.value === "boolean") {
+			result.input_checkbox = this.input_checkbox.checkbox.checked;
+		}
+		if (/number|(?:vec|mat)\d/.test(this.type.element.value)) {
+			result.input_number = this.input_number.checkbox.checked;
+			result.input_slider = this.input_slider.checkbox.checked;
+		}
+		if (this.type.element.value === "boolean") {
+			result.input_text = this.input_text.checkbox.checked;
+		}
+		if (this.type.element.value === "boolean") {
+			result.input_textarea = this.input_textarea.checkbox.checked;
+		}
+		// presets
+		if (this.type.element.value !== "boolean") {
+			result.presets = this.presets.presets.map(preset => ({
+				name: preset.name.value,
+				value: preset.editor.state.doc.toString()
+			}));
 		}
 		return result;
 	}
@@ -375,6 +407,7 @@ document.getElementById("save").onclick = async _ => {
 	};
 	const tutorialJson = json5.stringify(tutorialObject);
 
+	console.log(tutorialObject);
 	const res = await fetch("/save", {
 		method: "POST",
 		headers: {
@@ -421,6 +454,22 @@ class LabeledEditor {
 		this.label.innerText = labelText;
 		this.container.appendChild(this.label);
 		this.editor = new EditorView(configGenerator(this.container));
+	}
+
+}
+
+class LabeledCheckbox {
+
+	constructor(labelText, checked = false, disabled = false) {
+		this.checkbox = document.createElement("input");
+		this.checkbox.type = "checkbox";
+		this.checkbox.checked = checked;
+		this.checkbox.disabled = disabled;
+		this.label = document.createElement("label");
+		this.label.innerText = labelText;
+		this.container = document.createElement("div");
+		this.container.appendChild(this.checkbox);
+		this.container.appendChild(this.label);
 	}
 
 }
