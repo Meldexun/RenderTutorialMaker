@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" href="css/global.css">
+	<link rel="stylesheet" href="css/index.css">
+	<title>Render Tutorial Maker</title>
+</head>
+
+<body>
+	<header><%- include('header.ejs'); %></header>
+	<main>
+		<% if (!user) { %>
+			<p>You have to log in to access this site.</p>
+			<%- include('login.ejs'); %>
+		<% } else { %>
+			<p>Redirecting...</p>
+		<% } %>
+	</main>
+	<footer><%- include('footer.ejs'); %></footer>
+</body>
+
+</html>

@@ -52,9 +52,28 @@ function render(req, res, view) {
 }
 app.get("/", (req, res) => render(req, res, "index.ejs"));
 app.get("/view", (req, res) => render(req, res, "view.ejs"));
-app.get("/edit", (req, res) => render(req, res, "edit.ejs"));
-app.get("/profile", (req, res) => render(req, res, "profile.ejs"));
+app.get("/edit", (req, res) => {
+	if (!req.session.user) {
+		res.redirect("/login_required?redirect=edit" + (req.query.id ? "?id=" + req.query.id : ""));
+	} else {
+		render(req, res, "edit.ejs");
+	}
+});
+app.get("/profile", (req, res) => {
+	if (!req.session.user) {
+		res.redirect("/login_required?redirect=profile");
+	} else {
+		render(req, res, "profile.ejs");
+	}
+});
 app.get("/credits", (req, res) => render(req, res, "credits.ejs"));
+app.get("/login_required", (req, res) => {
+	if (req.session.user) {
+		res.redirect(req.query.redirect || "/");
+	} else {
+		render(req, res, "login_required.ejs");
+	}
+});
 
 // handle register/login/logout requests
 const userDataFile = path.join(__dirname, "users.json");
@@ -104,11 +123,11 @@ app.post("/register", express.urlencoded({ extended: false }), (req, res) => {
 
 	if (userRegistered(user)) {
 		console.log(req.session.error = `User "${user}" already registered`);
-		return res.redirect(req.headers.referer);
+		return res.redirect(req.headers.referer || "/");
 	}
 	if (!userUnlocked(user)) {
 		console.log(req.session.error = `User "${user}" not unlocked for registration`);
-		return res.redirect(req.headers.referer);
+		return res.redirect(req.headers.referer || "/");
 	}
 
 	try {
@@ -117,7 +136,7 @@ app.post("/register", express.urlencoded({ extended: false }), (req, res) => {
 		console.log(`Failed registering user "${user}"`);
 		console.log(err);
 		req.session.error = "An error occurred during registration. Please try again or ask an administrator for help."
-		return res.redirect(req.headers.referer);
+		return res.redirect(req.headers.referer || "/");
 	}
 	console.log(`User "${user}" registered successfully`);
 
@@ -131,7 +150,16 @@ app.post("/register", express.urlencoded({ extended: false }), (req, res) => {
 			if (err) next(err);
 
 			console.log(`User "${user}" logged in successfully`);
-			res.redirect(req.headers.referer);
+			if (req.headers.referer) {
+				const url = new URL(req.headers.referer);
+				if (url.pathname === "/login_required") {
+					res.redirect(url.searchParams.get("redirect") || "/");
+				} else {
+					res.redirect(req.headers.referer);
+				}
+			} else {
+				res.redirect("/");
+			}
 		});
 	});
 });
@@ -142,13 +170,13 @@ app.post("/login", express.urlencoded({ extended: false }), (req, res) => {
 	if (!userRegistered(user)) {
 		console.log(`User "${user}" not registered`);
 		req.session.error = "Invalid username";
-		return res.redirect(req.headers.referer);
+		return res.redirect(req.headers.referer || "/");
 	}
 	if (!passwordMatches(user, password)) {
 		// password wrong
 		console.log(`User "${user}" tried to log in with wrong password`);
 		req.session.error = "Invalid password";
-		return res.redirect(req.headers.referer);
+		return res.redirect(req.headers.referer || "/");
 	}
 
 	// login user
@@ -161,7 +189,16 @@ app.post("/login", express.urlencoded({ extended: false }), (req, res) => {
 			if (err) next(err);
 
 			console.log(`User "${user}" logged in successfully`);
-			res.redirect(req.headers.referer);
+			if (req.headers.referer) {
+				const url = new URL(req.headers.referer);
+				if (url.pathname === "/login_required") {
+					res.redirect(url.searchParams.get("redirect") || "/");
+				} else {
+					res.redirect(req.headers.referer);
+				}
+			} else {
+				res.redirect("/");
+			}
 		});
 	});
 });
@@ -174,7 +211,7 @@ app.post("/logout", (req, res) => {
 		if (err) next(err);
 
 		console.log(`User "${user}" logged out successfully`);
-		res.redirect(req.headers.referer);
+		res.redirect(req.headers.referer || "/");
 	});
 });
 

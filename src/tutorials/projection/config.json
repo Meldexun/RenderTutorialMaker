@@ -17,7 +17,7 @@
 		{
 			"name": "Model",
 			"type": "string (single-line)",
-			"default": "\"models/mouse/scene.gltf\"",
+			"default": "\"models/male/scene.gltf\"",
 			"presets": [
 				{
 					"name": "Farm",
@@ -28,10 +28,6 @@
 					"value": "\"models/forest/scene.gltf\""
 				},
 				{
-					"name": "Helmet",
-					"value": "\"models/helmet/scene.gltf\""
-				},
-				{
 					"name": "Male",
 					"value": "\"models/male/scene.gltf\""
 				},
@@ -40,8 +36,8 @@
 					"value": "\"models/mouse/scene.gltf\""
 				},
 				{
-					"name": "Ship",
-					"value": "\"models/ship/scene.gltf\""
+					"name": "Spaceship",
+					"value": "\"models/spaceship/scene.gltf\""
 				}
 			]
 		},
