@@ -226,7 +226,7 @@ class Property {
 			parent: container,
 			extensions: [basicSetup, javascript(), autocomplete_thin, githubDark]
 		}));
-		this.default.container.className = "input-oneline";
+		this.default.container.className = "input-multiline";
 
 		// create min, max, step inputs (only for number, vector and matrix types)
 		this.min = new LabeledElement("Min", "input", min => {
@@ -328,6 +328,7 @@ class Presets {
 		this.presets = [];
 
 		this.header = createElement("div", header => {
+			header.className = "presets-header";
 			header.appendChild(createElement("label", label => {
 				label.innerText = "Presets";
 			}));
@@ -343,8 +344,10 @@ class Presets {
 		});
 
 		this.presetsContainer = document.createElement("div");
+		this.presetsContainer.className = "presets";
 
 		this.container = document.createElement("div");
+		this.container.className = "presets-container";
 		this.container.appendChild(this.header);
 		this.container.appendChild(this.presetsContainer);
 	}
@@ -354,8 +357,10 @@ class Preset {
 
 	constructor(presets) {
 		this.header = createElement("div", header => {
+			header.className = "preset-header";
 			header.appendChild(this.name = createElement("input", name => {
 				name.type = "text";
+				name.value = "Unnamed Preset";
 			}));
 			header.appendChild(createElement("button", button => {
 				button.type = "button";
@@ -371,6 +376,7 @@ class Preset {
 		});
 
 		this.container = document.createElement("div");
+		this.container.className = "preset";
 		this.container.appendChild(this.header);
 		this.editor = new EditorView({
 			parent: this.container,

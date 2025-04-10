@@ -43,7 +43,7 @@ main {
 	.property {
 		background: #202020;
 		padding: 5px;
-		margin: 5px 10px;
+		margin: 10px 10px;
 
 		.view-header,
 		.property-header {
@@ -61,7 +61,7 @@ main {
 		}
 
 		>div {
-			padding: 2px 0
+			padding: 2px 0;
 		}
 
 		.input-oneline {
@@ -70,22 +70,51 @@ main {
 			width: 300px;
 		}
 
-		.presets-input {
-			align-items: flex-start;
+		.presets-container {
+			border-style: solid none none;
+			border-width: 1px;
+			border-color: #3D444D;
+
+			.presets-header {
+				display: flex;
+				justify-content: space-between;
+				width: 150px;
+			}
+
+			.presets {
+				padding: 2px 0px;
+
+				.preset {
+					padding: 4px 2px;
+
+					>* {
+						margin: 4px 0px;
+					}
+
+					.preset-header {
+						>* {
+							margin: 0px 8px 0px 0px
+						}
+					}
+				}
+			}
 		}
 	}
 
-	.cm-editor {
-		background-color: #1E1F22;
-		height: 50vh
+	.description-editor-container>.cm-editor {
+		height: 25vh;
 	}
 
-	.cm-gutter {
-		background-color: #1E1F22;
-		color: #77919A
+	.view {
+		.cm-editor {
+			height: 25vh;
+		}
 	}
 
-	.cm-activeLineGutter {
-		background-color: #1E1F22;
+	.property {
+		.cm-editor {
+			min-height: 26px;
+			max-height: 100px;
+		}
 	}
 }
