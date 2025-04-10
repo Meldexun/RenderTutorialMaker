@@ -2,14 +2,15 @@
 	gl.clearColor(0.1, 0.2, 0.3, 1.0);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	gl.useProgram(this.program);
-	gl.bindTexture(gl.TEXTURE_2D, this.texture);
-	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+	// render texture
+	gl.useProgram(this.textureRenderer.program);
+	gl.bindTexture(gl.TEXTURE_2D, this.textureRenderer.texture);
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.textureRenderer.vertexBuffer);
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.textureRenderer.indexBuffer);
 
-	gl.uniformMatrix4fv(this.u_ProjectionMatrix, false, mat4.create());
-	gl.uniformMatrix4fv(this.u_ViewMatrix, false, mat4.create());
-	gl.uniformMatrix4fv(this.u_ModelMatrix, false, mat4.create());
+	gl.uniformMatrix4fv(this.textureRenderer.u_ProjectionMatrix, false, mat4.create());
+	gl.uniformMatrix4fv(this.textureRenderer.u_ViewMatrix, false, mat4.create());
+	gl.uniformMatrix4fv(this.textureRenderer.u_ModelMatrix, false, mat4.create());
 
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl[properties.get("TEXTURE_MIN_FILTER").getValue()]);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl[properties.get("TEXTURE_MAG_FILTER").getValue()]);
@@ -31,15 +32,15 @@
 		p4[0], p4[1], 0.0, t4[0], t4[1]
 	]), gl.STREAM_DRAW);
 
-	gl.enableVertexAttribArray(this.a_Position);
-	gl.enableVertexAttribArray(this.a_Texture);
-	gl.vertexAttribPointer(this.a_Position, 3, gl.FLOAT, false, 20, 0);
-	gl.vertexAttribPointer(this.a_Texture, 2, gl.FLOAT, false, 20, 12);
+	gl.enableVertexAttribArray(this.textureRenderer.a_Position);
+	gl.enableVertexAttribArray(this.textureRenderer.a_Texture);
+	gl.vertexAttribPointer(this.textureRenderer.a_Position, 3, gl.FLOAT, false, 20, 0);
+	gl.vertexAttribPointer(this.textureRenderer.a_Texture, 2, gl.FLOAT, false, 20, 12);
 
 	gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, 0);
 
-	gl.disableVertexAttribArray(this.a_Position);
-	gl.disableVertexAttribArray(this.a_Texture);
+	gl.disableVertexAttribArray(this.textureRenderer.a_Position);
+	gl.disableVertexAttribArray(this.textureRenderer.a_Texture);
 
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 	gl.bindBuffer(gl.ARRAY_BUFFER, null);

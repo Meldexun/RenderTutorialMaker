@@ -1,21 +1,13 @@
 (async function(gl) {
 	{
-		const program = await fetchProgram(gl, "position_texture.vsh", "position_texture.fsh");
+		const program = await fetchProgram(gl, "/shaders/position_texture.vsh", "/shaders/position_texture.fsh");
 		const u_ProjectionMatrix = gl.getUniformLocation(program, "u_ProjectionMatrix");
 		const u_ViewMatrix = gl.getUniformLocation(program, "u_ViewMatrix");
 		const u_ModelMatrix = gl.getUniformLocation(program, "u_ModelMatrix");
 		const a_Position = gl.getAttribLocation(program, "a_Position");
 		const a_Texture = gl.getAttribLocation(program, "a_Texture");
 
-		const texture = gl.createTexture();
-		const image = new Image();
-		image.src = "/textures/flower.jpg";
-		image.onload = _ => {
-			gl.bindTexture(gl.TEXTURE_2D, texture);
-			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-			gl.generateMipmap(gl.TEXTURE_2D);
-			gl.bindTexture(gl.TEXTURE_2D, null);
-		};
+		const texture = loadTexture(gl, "/textures/flower.jpg");
 
 		const vertexBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
@@ -49,7 +41,7 @@
 	}
 
 	{
-		const program = await fetchProgram(gl, "position_color.vsh", "position_color.fsh");
+		const program = await fetchProgram(gl, "/shaders/position_color.vsh", "/shaders/position_color.fsh");
 		const u_ProjectionMatrix = gl.getUniformLocation(program, "u_ProjectionMatrix");
 		const u_ViewMatrix = gl.getUniformLocation(program, "u_ViewMatrix");
 		const u_ModelMatrix = gl.getUniformLocation(program, "u_ModelMatrix");

@@ -1,13 +1,13 @@
 {
-	"title": "Texture Tutorial",
+	"name": "Texture Tutorial",
 	"views": [
 		{
-			"id": "Screen Space View",
+			"name": "Screen Space View",
 			"width": "500",
 			"height": "500"
 		},
 		{
-			"id": "Texture Space View",
+			"name": "Texture Space View",
 			"width": "500",
 			"height": "500"
 		}
