@@ -1,5 +1,6 @@
 {
 	"name": "Texture Tutorial",
+	"descriptions": "Here you can test the effect of different texture parameters and how the provided texture coordinates affect the rendered image.",
 	"views": [
 		{
 			"name": "Screen Space View",

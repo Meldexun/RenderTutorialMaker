@@ -1,5 +1,6 @@
 {
 	"name": "Fog Tutorial",
+	"description": "In this tutorial a few simple fog implementations can be tested. (Fog start and end only affects linear mode, Fog density only affects exp and exp2 mode)",
 	"views": [
 		{
 			"name": "World Space View",

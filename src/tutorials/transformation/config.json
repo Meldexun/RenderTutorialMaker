@@ -1,6 +1,6 @@
 {
-	"name": "Projection Tutorial",
-	"description": "This is a projection tutorial",
+	"name": "Transformation Tutorial",
+	"description": "In this tutorial you can see the effects of different projection, view, and model matrices. You can also rotate/move/zoom the view matrix by left-drag-clicking/right-drag-clicking/scrolling in a view.",
 	"views": [
 		{
 			"name": "World Space View",

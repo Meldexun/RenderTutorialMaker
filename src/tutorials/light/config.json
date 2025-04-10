@@ -1,5 +1,6 @@
 {
 	"name": "Light Tutorial",
+	"description": "Here you can control the properties of a single, simple light source in a scene.",
 	"views": [
 		{
 			"name": "World Space View",
