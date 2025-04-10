@@ -6,8 +6,10 @@ import * as RenderUtil from "./util/render_util.js";
 
 import json5 from "json5";
 import { EditorView, basicSetup } from "codemirror";
+import { keymap } from "@codemirror/view";
+import { Prec } from "@codemirror/state";
 import { javascript } from "@codemirror/lang-javascript";
-import { autocomplete_js } from "./util/autocomplete_js";
+import { autocomplete_thin } from "./util/autocomplete_js";
 import { githubDark } from '@uiw/codemirror-theme-github';
 
 // workaround to make dependencies available in eval expressions
@@ -411,22 +413,48 @@ async function start() {
 					}
 					break;
 				case "string (single-line)":
-					if (propertyConfig.input_text === true) {
-						propertyInputs.appendChild(createElement("input", input => {
-							input.type = "text";
-							input.onchange = () => property.setValue(input.checked);
-							property.addListener(value => input.checked = value);
-						}));
-					}
-					break;
 				case "string (multi-line)":
-					if (propertyConfig.input_textarea === true) {
+					if (propertyConfig.type === "string (single-line)" && propertyConfig.input_text === true
+						|| propertyConfig.type === "string (multi-line)" && propertyConfig.input_textarea === true) {
+						// default extensions
+						const extensions = [
+							basicSetup,
+							githubDark,
+							EditorView.updateListener.of(update => {
+								if (update.docChanged) {
+									property.setValue(update.state.doc.toString());
+								}
+							})
+						];
+						// language support
+						if (propertyConfig.language === "JavaScript") {
+							extensions.push(javascript());
+							extensions.push(autocomplete_thin);
+						}
+						// disable entry, paste and drop for single-line
+						if (propertyConfig.type === "string (single-line)") {
+							extensions.push(Prec.high(keymap.of([{
+								key: "Enter",
+								run() {
+									return true;
+								}
+							}])));
+							extensions.push(EditorView.domEventHandlers({
+								paste(ev) {
+									ev.preventDefault();
+								},
+								drop(ev) {
+									ev.preventDefault();
+								}
+							}));
+						}
+						const container = document.createElement("div");
+						container.className = "editor-" + (propertyConfig.type === "string (single-line)" ? "single" : "multi");
 						const editor = property.editor = new EditorView({
-							parent: propertyInputs,
-							extensions: [basicSetup, javascript(), autocomplete_js, githubDark, EditorView.updateListener.of(update => {
-								property.setValue(update.state.doc.toString());
-							})]
+							parent: container,
+							extensions: extensions
 						});
+						propertyInputs.appendChild(container);
 						property.addListener(value => {
 							if (editor.state.doc.toString() !== value) {
 								editor.dispatch({

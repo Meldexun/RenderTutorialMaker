@@ -1,0 +1,88 @@
+main {
+	background: #0D1117;
+	width: 90%;
+	align-self: center;
+	padding: 15px 30px;
+
+	h1 {
+		margin: 5px;
+		font-size: 300%;
+		line-height: 100%;
+	}
+
+	h2 {
+		margin: 5px;
+		font-size: 200%;
+		line-height: 100%;
+	}
+}
+
+.description {
+	margin: 10px;
+}
+
+.views {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	margin: 0 10px;
+
+	.view {
+		display: flex;
+		flex-direction: column;
+		margin: 4px;
+	}
+}
+
+.properties {
+	display: flex;
+	flex-direction: column;
+	margin: 0 10px;
+
+	.property {
+		background-color: #252b2d;
+		display: flex;
+		flex-direction: column;
+		width: 850px;
+		margin: 4px 0px;
+
+		.property-header {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			padding: 6px 4px 6px 4px;
+			font-size: 120%;
+		}
+
+		.property-inputs {
+			padding: 6px 8px 6px 8px;
+			border-style: solid none none none;
+			border-width: 1px;
+			border-color: #3D444D;
+		}
+	}
+}
+
+.cm-editor {
+	width: 800px;
+}
+
+.editor-single>.cm-editor {
+	height: 29px;
+}
+
+.editor-multi>.cm-editor {
+	min-height: 10vh;
+	max-height: 25vh;
+}
+
+.cm-scroller {
+	border-style: solid;
+	border-width: 1px;
+	border-color: #3D444D;
+}
+
+.cm-lineNumbers,
+.cm-foldGutter {
+	min-height: 10vh !important;
+}
