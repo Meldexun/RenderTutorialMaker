@@ -1,4 +1,10 @@
 
+export async function fetchProgram(gl, vertexShader, fragmentShader) {
+	return loadProgram(gl,
+		await fetch(vertexShader).then(res => res.text()),
+		await fetch(fragmentShader).then(res => res.text()));
+}
+
 export function loadProgram(gl, vertexShader, fragmentShader) {
 	const program = gl.createProgram();
 	const vsh = loadShader(gl, gl.VERTEX_SHADER, vertexShader);
