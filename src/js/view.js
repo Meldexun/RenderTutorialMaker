@@ -1,9 +1,16 @@
 import * as ShaderLoader from "./util/shader_loader.js";
 import * as TextureLoader from "./util/texture_loader.js";
 import * as GLMatrix from "gl-matrix";
-import * as Loaders from "@loaders.gl/core";
-import * as GLTF from "@loaders.gl/gltf";
+import * as GLTF from "./util/gltf_util.js";
+import * as RenderUtil from "./util/render_util.js";
 
+import { EditorView, basicSetup } from "codemirror";
+import { javascript } from "@codemirror/lang-javascript";
+import { autocomplete_js } from "./util/autocomplete_js";
+import { githubDark } from '@uiw/codemirror-theme-github';
+
+// workaround to make dependencies available in eval expressions
+const fetchProgram = ShaderLoader.fetchProgram;
 const loadProgram = ShaderLoader.loadProgram;
 const loadShader = ShaderLoader.loadShader;
 const loadTexture = TextureLoader.loadTexture;
@@ -13,29 +20,143 @@ const vec4 = GLMatrix.vec4;
 const mat2 = GLMatrix.mat2;
 const mat3 = GLMatrix.mat3;
 const mat4 = GLMatrix.mat4;
-const toRadians = GLMatrix.glMatrix.toRadian;
-
-async function loadGLTF(source) {
-	const gltf = await Loaders.load(source, GLTF.GLTFLoader);
-	gltf.model = GLTF.postProcessGLTF(gltf);
-	return gltf;
-}
+const toRadian = GLMatrix.glMatrix.toRadian;
+const loadGLTF = GLTF.loadGLTF;
+const initProcessedGLTF = GLTF.initProcessedGLTF;
+const loadAndInitGLTF = GLTF.loadAndInitGLTF;
+const disposeGLTF = GLTF.disposeGLTF;
+const createModelProvider = GLTF.createModelProvider;
+const renderGLTF = GLTF.renderGLTF;
+const createFrustumRenderer = RenderUtil.createFrustumRenderer;
 
 class View {
 
-	constructor(canvas, initFunc, drawFunc) {
-		this.canvas = canvas;
-		this.gl = canvas.getContext("webgl2");
+	constructor(name, width, height, initFunc, drawFunc) {
+		this.name = name;
+		this.canvas = document.createElement("canvas");
+		this.canvas.width = width;
+		this.canvas.height = height;
+		this.canvas.style = "width: " + width + "px;" + " " + "height: " + height + "px;";
+		this.gl = this.canvas.getContext("webgl2");
 		this.initFunc = initFunc;
 		this.drawFunc = drawFunc;
+		this.container = document.createElement("div");
+		this.container.className = "view";
+		this.container.appendChild(createElement("label", label => {
+			label.textContent = name;
+		}));
+		this.container.appendChild(this.canvas);
 	}
 
 	async init() {
 		await this.initFunc(this.gl);
 	}
 
-	draw(time, properties) {
-		this.drawFunc(this.gl, time, properties);
+	draw(time) {
+		this.drawFunc(this.gl, time);
+	}
+
+	setupCamera3D(initialPosition = vec3.create(), initialPitch = 0.0, initialYaw = 0.0, initialZoom = -10.0, onChangeCallback = () => {}) {
+		this.cameraPosition = initialPosition;
+		this.cameraPitch = Math.min(Math.max(initialPitch, -90.0), 90.0);
+		this.cameraYaw = initialYaw;
+		this.cameraZoom = Math.min(Math.max(initialZoom, -1000.0), -0.01);
+
+		this.canvas.onmousedown = ev => {
+			if (ev.button === 0) {
+				this.isDraggingLeft = true;
+			}
+			if (ev.button === 2) {
+				this.isDraggingRight = true;
+			}
+		};
+		document.addEventListener("mousemove", ev => {
+			const deltaX = -this.mouseX + (this.mouseX = ev.screenX);
+			const deltaY = -this.mouseY + (this.mouseY = ev.screenY);
+
+			if (this.isDraggingLeft) {
+				this.cameraPitch = Math.min(Math.max(this.cameraPitch + deltaY, -90.0), 90.0);
+				this.cameraYaw += deltaX;
+				onChangeCallback();
+			}
+			if (this.isDraggingRight) {
+				this.cameraPosition = vec3.add(
+					vec3.create(),
+					this.cameraPosition,
+					vec3.scale(
+						vec3.create(),
+						vec3.rotateY(
+							vec3.create(),
+							vec3.rotateX(
+								vec3.create(),
+								vec3.set(vec3.create(), 0.0, 1.0, 0.0),
+								vec3.create(),
+								toRadian(-this.cameraPitch)
+							),
+							vec3.create(),
+							toRadian(-this.cameraYaw)
+						),
+						-deltaY * 0.25
+					)
+				);
+				this.cameraPosition = vec3.add(
+					vec3.create(),
+					this.cameraPosition,
+					vec3.scale(
+						vec3.create(),
+						vec3.rotateY(
+							vec3.create(),
+							vec3.set(vec3.create(), 1.0, 0.0, 0.0),
+							vec3.create(),
+							toRadian(-this.cameraYaw)
+						),
+						deltaX * 0.25
+					)
+				);
+				onChangeCallback();
+			}
+		});
+		document.addEventListener("mouseup", ev => {
+			if (this.isDraggingLeft && ev.button === 0) {
+				this.isDraggingLeft = false;
+			}
+			if (this.isDraggingRight && ev.button === 2) {
+				this.isDraggingRight = false;
+				this.cancelContextMenu = true;
+			}
+		});
+		document.addEventListener("contextmenu", ev => {
+			if (this.cancelContextMenu) {
+				this.cancelContextMenu = false;
+				ev.preventDefault();
+			}
+		});
+		this.canvas.onwheel = ev => {
+			this.cameraZoom = Math.min(Math.max(this.cameraZoom + ev.wheelDelta * 0.1, this.cameraZoom * 1.5, -1000.0), this.cameraZoom * 0.75, -0.01);
+			ev.preventDefault();
+			onChangeCallback();
+		};
+		onChangeCallback();
+	}
+
+	getCamera3D() {
+		return mat4.translate(
+			mat4.create(),
+			mat4.rotateY(
+				mat4.create(),
+				mat4.rotateX(
+					mat4.create(),
+					mat4.translate(
+						mat4.create(),
+						mat4.create(),
+						vec3.set(vec3.create(), 0.0, 0.0, this.cameraZoom)
+					),
+					toRadian(this.cameraPitch)
+				),
+				toRadian(this.cameraYaw)
+			),
+			vec3.set(vec3.create(), this.cameraPosition[0], this.cameraPosition[1], this.cameraPosition[2])
+		);
 	}
 
 }
@@ -65,7 +186,7 @@ class Property {
 
 }
 
-const views = [];
+const views = new Map();
 const properties = new Map();
 
 try {
@@ -74,12 +195,14 @@ try {
 	requestAnimationFrame(draw);
 } catch (error) {
 	const errorMessage = document.createElement("pre");
-	const stackTrace = error.stack.split(new RegExp("\r?\n")).map(s => "    " + s).join("<br>");
+	const stackTrace = error.stack ? error.stack.split(/\r?\n/).map(s => "    " + s).join("<br>") : "";
 	errorMessage.innerHTML = "An error occured during initialization. Please contact the tutorial author to get this issue resolved.<br>" + error + "<br>" + stackTrace;
 	document.querySelector("main").replaceChildren(errorMessage);
 }
 
+// loads the tutorial and initializes the views and properties
 async function start() {
+	// parse tutorial id from url search parameters
 	const searchParams = new URLSearchParams(new URL(window.location.href).searchParams);
 	const tutorialId = searchParams.get("id");
 	if (!tutorialId) {
@@ -87,65 +210,78 @@ async function start() {
 	}
 	const tutorialDirectory = "./tutorials/" + tutorialId + "/";
 
+	// load tutorial configuration json
 	const tutorialConfig = await fetch(tutorialDirectory + "config.json")
 		.then(res => res.text())
 		.then(JSON.parse);
 
-	const tutorialContainer = document.createElement("div");
-
+	// load views
 	const viewsContainer = document.createElement("div");
 	viewsContainer.className = "views";
 	for (const viewConfig of tutorialConfig.views) {
-		const canvas = document.createElement("canvas");
-		canvas.id = viewConfig.id;
-		canvas.width = viewConfig.width;
-		canvas.height = viewConfig.height;
-		canvas.style = "width: " + viewConfig.width + "px;" + " " + "height: " + viewConfig.height + "px;";
-		viewsContainer.appendChild(canvas);
+		if (views.has(viewConfig.name)) {
+			throw new Error(`Duplicate view with name "${viewConfig.name}"`)
+		}
 
-		const initFunc = eval(await fetch(tutorialDirectory + viewConfig.id + "_init.js").then(res => res.text()));
-		const drawFunc = eval(await fetch(tutorialDirectory + viewConfig.id + "_loop.js").then(res => res.text()));
-
-		const view = new View(canvas, initFunc, drawFunc);
-		await view.init();
-		views.push(view);
+		const initFunc = eval(await fetch(tutorialDirectory + viewConfig.name + "_init.js").then(res => res.text()));
+		const drawFunc = eval(await fetch(tutorialDirectory + viewConfig.name + "_loop.js").then(res => res.text()));
+		const view = new View(viewConfig.name, viewConfig.width, viewConfig.height, initFunc, drawFunc);
+		views.set(viewConfig.name, view);
+		viewsContainer.appendChild(view.container);
 	}
-	tutorialContainer.appendChild(viewsContainer);
 
+	// load properties
 	const propertiesContainer = document.createElement("div");
 	propertiesContainer.className = "properties";
 	for (const propertyConfig of tutorialConfig.properties) {
-		const property = new Property(propertyConfig.id);
-		properties.set(property.name, property);
+		if (properties.has(propertyConfig.name)) {
+			throw new Error(`Duplicate property with name "${propertyConfig.name}"`)
+		}
+		const property = new Property(propertyConfig.name);
 
 		const propertyContainer = document.createElement("div");
 		propertyContainer.className = "property";
-		propertyContainer.appendChild(createElement("label", label => {
-			label.textContent = property.name;
-		}));
-		if (propertyConfig.input_presets && propertyConfig["preset_0"]) {
-			propertyContainer.appendChild(createElement("select", select => {
-				for (let i = 0; propertyConfig["preset_" + i]; i++) {
-					select.appendChild(createElement("option", option => {
-						option.value = propertyConfig["preset_" + i];
-						option.textContent = propertyConfig["preset_" + i];
-					}));
-				}
-				select.onchange = () => {
-					property.setValue(eval(select.value));
-				};
-				property.addListener(value => {
-					const oldValue = eval(select.value);
-					if (oldValue && oldValue.toString() !== value.toString()) {
-						select.value = "";
-					}
-				});
+		propertyContainer.appendChild(createElement("div", header => {
+			header.className = "property-header";
+			header.appendChild(createElement("label", label => {
+				label.textContent = property.name;
 			}));
-		}
+
+			// load presets
+			if (propertyConfig.presets) {
+				header.appendChild(createElement("select", select => {
+					for (let preset of propertyConfig.presets) {
+						select.appendChild(createElement("option", option => {
+							option.value = preset.value;
+							option.textContent = preset.name;
+						}));
+					}
+					select.onchange = () => {
+						property.setValue(eval(select.value));
+					};
+					property.addListener(value => {
+						const oldValue = eval(select.value);
+						if (oldValue && oldValue.toString() !== value.toString()) {
+							select.value = "";
+						}
+						for (let option of select.options) {
+							if (eval(option.value) === value) {
+								select.value = option.value;
+								break;
+							}
+						}
+					});
+				}));
+			}
+		}));
+
+		// load different input options based on property type
+		const propertyInputs = document.createElement("div");
+		propertyInputs.className = "property-inputs";
 		switch (propertyConfig.type) {
 			case "boolean":
 				if (propertyConfig.input_checkbox === true) {
-					propertyContainer.appendChild(createElement("input", input => {
+					propertyInputs.appendChild(createElement("input", input => {
 						input.type = "checkbox";
 						input.onchange = () => property.setValue(input.checked);
 						property.addListener(value => input.checked = value);
@@ -153,6 +289,27 @@ async function start() {
 				}
 				break;
 			case "number":
+				if (propertyConfig.input_number === true) {
+					propertyInputs.appendChild(createElement("input", input => {
+						input.type = "number";
+						input.min = propertyConfig.min ?? -10.0;
+						input.max = propertyConfig.max ?? 10.0;
+						input.step = propertyConfig.step ?? "any";
+						input.onchange = () => property.setValue(input.value);
+						property.addListener(value => input.value = value);
+					}));
+				}
+				if (propertyConfig.input_slider === true) {
+					propertyInputs.appendChild(createElement("input", input => {
+						input.type = "range";
+						input.min = propertyConfig.min ?? -10.0;
+						input.max = propertyConfig.max ?? 10.0;
+						input.step = propertyConfig.step ?? "any";
+						input.oninput = () => property.setValue(input.value);
+						property.addListener(value => input.value = value);
+					}));
+				}
+				break;
 			case "vec2":
 			case "vec3":
 			case "vec4":
@@ -167,6 +324,9 @@ async function start() {
 						for (let row = 0; row < rows; row++) {
 							inputs[row * cols + col] = createElement("input", input => {
 								input.type = "number";
+								input.min = propertyConfig.min ?? -10.0;
+								input.max = propertyConfig.max ?? 10.0;
+								input.step = propertyConfig.step ?? "any";
 								input.onchange = () => property.setValue(inputs.map(input => input.value));
 							});
 						}
@@ -176,7 +336,7 @@ async function start() {
 						for (let row = 0; row < rows; row++) {
 							rowContainer.appendChild(inputs[row * cols + col]);
 						}
-						propertyContainer.appendChild(rowContainer);
+						propertyInputs.appendChild(rowContainer);
 					}
 					property.addListener(value => {
 						for (let i in inputs) {
@@ -193,10 +353,10 @@ async function start() {
 						for (let row = 0; row < rows; row++) {
 							inputs[row * cols + col] = createElement("input", input => {
 								input.type = "range";
-								input.min = propertyConfig.min;
-								input.max = propertyConfig.max;
-								input.step = "any";
-								input.onchange = () => property.setValue(inputs.map(input => input.value));
+								input.min = propertyConfig.min ?? -10.0;
+								input.max = propertyConfig.max ?? 10.0;
+								input.step = propertyConfig.step ?? "any";
+								input.oninput = () => property.setValue(inputs.map(input => input.value));
 							});
 						}
 					}
@@ -205,7 +365,7 @@ async function start() {
 						for (let row = 0; row < rows; row++) {
 							rowContainer.appendChild(inputs[row * cols + col]);
 						}
-						propertyContainer.appendChild(rowContainer);
+						propertyInputs.appendChild(rowContainer);
 					}
 					property.addListener(value => {
 						for (let i in inputs) {
@@ -216,7 +376,7 @@ async function start() {
 				break;
 			case "string (single-line)":
 				if (propertyConfig.input_text === true) {
-					propertyContainer.appendChild(createElement("input", input => {
+					propertyInputs.appendChild(createElement("input", input => {
 						input.type = "text";
 						input.onchange = () => property.setValue(input.checked);
 						property.addListener(value => input.checked = value);
@@ -225,24 +385,68 @@ async function start() {
 				break;
 			case "string (multi-line)":
 				if (propertyConfig.input_textarea === true) {
-					propertyContainer.appendChild(createElement("input", input => {
-						input.type = "textarea";
-						input.onchange = () => property.setValue(input.checked);
-						property.addListener(value => input.checked = value);
-					}));
+					const editor = property.editor = new EditorView({
+						parent: propertyInputs,
+						extensions: [basicSetup, javascript(), autocomplete_js, githubDark, EditorView.updateListener.of(update => {
+							property.setValue(update.state.doc.toString());
+						})]
+					});
+					property.addListener(value => {
+						if (editor.state.doc.toString() !== value) {
+							editor.dispatch({
+								changes: {
+									from: 0,
+									to: editor.state.doc.length,
+									insert: value
+								}
+							});
+						}
+					});
 				}
 				break;
 		}
+		if (propertyInputs.hasChildNodes()) {
+			propertyContainer.appendChild(propertyInputs);
+		}
+
+		properties.set(property.name, property);
 		propertiesContainer.appendChild(propertyContainer);
 
+		// set default value
 		property.setValue(eval(propertyConfig.default));
 	}
-	tutorialContainer.appendChild(propertiesContainer);
 
+	// initialize views
+	for (const view of views.values()) {
+		await view.init();
+	}
+
+	// tutorial loaded successfully, set title and display tutorial
 	document.title = tutorialConfig.title;
+	const tutorialContainer = document.createElement("div");
+	tutorialContainer.className = "tutorial";
+	tutorialContainer.appendChild(createElement("h1", title => {
+		title.textContent = tutorialConfig.title;
+	}));
+	tutorialContainer.appendChild(document.createElement("hr"));
+	tutorialContainer.appendChild(createElement("p", paragraph => {
+		paragraph.className = "description";
+		paragraph.innerHTML = tutorialConfig.description;
+	}));
+	tutorialContainer.appendChild(document.createElement("hr"));
+	tutorialContainer.appendChild(createElement("h2", title => {
+		title.textContent = "Views";
+	}));
+	tutorialContainer.appendChild(viewsContainer);
+	tutorialContainer.appendChild(document.createElement("hr"));
+	tutorialContainer.appendChild(createElement("h2", title => {
+		title.textContent = "Properties";
+	}));
+	tutorialContainer.appendChild(propertiesContainer);
 	document.querySelector("main").replaceChildren(tutorialContainer);
 }
 
+// called every frame to update the views
 function draw(time) {
 	try {
 		// create property map
@@ -261,6 +465,7 @@ function draw(time) {
 	}
 }
 
+// helper function to create html element with optional callback argument
 function createElement(type, callback = undefined) {
 	const element = document.createElement(type);
 	if (callback) {

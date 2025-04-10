@@ -35,17 +35,17 @@ const options_base = [
 	{ label: "loadShader", type: "function" },
 	{ label: "loadTexture", type: "function" },
 	{ label: "loadGLTF", type: "function" },
-	{ label: "loadInternalGLTF", type: "function" },
 	{ label: "initProcessedGLTF", type: "function" },
 	{ label: "loadAndInitGLTF", type: "function" },
 	{ label: "disposeGLTF", type: "function" },
-	{ label: "renderGLTF", type: "function" }
+	{ label: "renderGLTF", type: "function" },
+	{ label: "createFrustumRenderer", type: "function" }
 ];
 
 // if regex matches returns CompletionResult
-// from: regex match start + length of group 1
-// options: getOptions(regexMatch)
-// validFor: /^\w*$/
+//   from: regex match start + length of group 1
+//   options: getOptions(regexMatch)
+//   validFor: /^\w*$/
 // otherwise returns null
 function autocomplete_match(context, regex, getOptions) {
 	const before = context.matchBefore(regex);
