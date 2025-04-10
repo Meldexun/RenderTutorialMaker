@@ -220,13 +220,14 @@ async function start() {
 	if (!tutorialId) {
 		throw new Error("No tutorial selected!");
 	}
-	const tutorialDirectory = "./tutorials/" + tutorialId + "/";
+	const tutorialDirectory = "/tutorials/" + tutorialId + "/";
 
 	// load tutorial configuration json
-	const tutorialJson = await fetch(tutorialDirectory + "config.json").then(res => res.text());
-	if (!tutorialJson) {
-		throw new Error("Tutorial does not exist!");
+	const tutorialResponse = await fetch(tutorialDirectory + "config.json");
+	if (tutorialResponse.status >= 400) {
+		throw new Error(`${tutorialResponse.status} ${tutorialResponse.statusText}: Can't fetch tutorial from "${tutorialDirectory + "config.json"}"`);
 	}
+	const tutorialJson = await tutorialResponse.text();
 	let tutorialConfig;
 	try {
 		tutorialConfig = json5.parse(tutorialJson);

@@ -1,8 +1,14 @@
 
 export async function fetchProgram(gl, vertexShader, fragmentShader) {
-	return loadProgram(gl,
-		await fetch(vertexShader).then(res => res.text()),
-		await fetch(fragmentShader).then(res => res.text()));
+	const vertexResponse = await fetch(vertexShader);
+	if (vertexResponse.status >= 400) {
+		throw new Error(`${vertexResponse.status} ${vertexResponse.statusText}: Can't fetch shader from "${vertexShader}"`);
+	}
+	const fragmentResponse = await fetch(fragmentShader);
+	if (fragmentResponse.status >= 400) {
+		throw new Error(`${fragmentResponse.status} ${fragmentResponse.statusText}: Can't fetch shader from "${fragmentShader}"`);
+	}
+	return loadProgram(gl, await vertexResponse.test(), await fragmentResponse.text());
 }
 
 export function loadProgram(gl, vertexShader, fragmentShader) {
