@@ -4,6 +4,7 @@ import * as GLMatrix from "gl-matrix";
 import * as GLTF from "./util/gltf_util.js";
 import * as RenderUtil from "./util/render_util.js";
 
+import json5 from "json5";
 import { EditorView, basicSetup } from "codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { autocomplete_js } from "./util/autocomplete_js";
@@ -56,7 +57,7 @@ class View {
 		this.drawFunc(this.gl, time);
 	}
 
-	setupCamera3D(initialPosition = vec3.create(), initialPitch = 0.0, initialYaw = 0.0, initialZoom = -10.0, onChangeCallback = () => {}) {
+	setupCamera3D(initialPosition = vec3.create(), initialPitch = 0.0, initialYaw = 0.0, initialZoom = -10.0, onChangeCallback = () => { }) {
 		this.cameraPosition = initialPosition;
 		this.cameraPitch = Math.min(Math.max(initialPitch, -90.0), 90.0);
 		this.cameraYaw = initialYaw;
@@ -193,11 +194,22 @@ try {
 	await start();
 
 	requestAnimationFrame(draw);
-} catch (error) {
-	const errorMessage = document.createElement("pre");
-	const stackTrace = error.stack ? error.stack.split(/\r?\n/).map(s => "    " + s).join("<br>") : "";
-	errorMessage.innerHTML = "An error occured during initialization. Please contact the tutorial author to get this issue resolved.<br>" + error + "<br>" + stackTrace;
-	document.querySelector("main").replaceChildren(errorMessage);
+} catch (err) {
+	let errorMessage = "An error occured during initialization. Please contact the tutorial author to get this issue resolved.<br><br>";
+	let error = err;
+	while (error) {
+		errorMessage += error.toString();
+		errorMessage += "<br>";
+		if (!error.parent) {
+			if (error.stack) {
+				errorMessage += error.stack.split(/\r?\n/).map(s => "    " + s).join("<br>");
+				errorMessage += "<br>";
+			}
+			break;
+		}
+		error = error.parent;
+	}
+	document.querySelector("main").replaceChildren(createElement("pre", pre => pre.innerHTML = errorMessage));
 }
 
 // loads the tutorial and initializes the views and properties
@@ -206,219 +218,253 @@ async function start() {
 	const searchParams = new URLSearchParams(new URL(window.location.href).searchParams);
 	const tutorialId = searchParams.get("id");
 	if (!tutorialId) {
-		throw new Error("No tutorial selected");
+		throw new Error("No tutorial selected!");
 	}
 	const tutorialDirectory = "./tutorials/" + tutorialId + "/";
 
 	// load tutorial configuration json
-	const tutorialConfig = await fetch(tutorialDirectory + "config.json")
-		.then(res => res.text())
-		.then(JSON.parse);
+	const tutorialJson = await fetch(tutorialDirectory + "config.json").then(res => res.text());
+	if (!tutorialJson) {
+		throw new Error("Tutorial does not exist!");
+	}
+	let tutorialConfig;
+	try {
+		tutorialConfig = json5.parse(tutorialJson);
+	} catch (err) {
+		const e = new Error(`Failed parsing tutorial json!`, err);
+		e.parent = err;
+		throw e;
+	}
 
 	// load views
 	const viewsContainer = document.createElement("div");
 	viewsContainer.className = "views";
 	for (const viewConfig of tutorialConfig.views) {
+		if (!viewConfig.name) {
+			throw new Error(`View is missing name`)
+		}
 		if (views.has(viewConfig.name)) {
 			throw new Error(`Duplicate view with name "${viewConfig.name}"`)
 		}
 
-		const initFunc = eval(await fetch(tutorialDirectory + viewConfig.name + "_init.js").then(res => res.text()));
-		const drawFunc = eval(await fetch(tutorialDirectory + viewConfig.name + "_loop.js").then(res => res.text()));
-		const view = new View(viewConfig.name, viewConfig.width, viewConfig.height, initFunc, drawFunc);
-		views.set(viewConfig.name, view);
-		viewsContainer.appendChild(view.container);
+		try {
+			const initFunc = eval(await fetch(tutorialDirectory + viewConfig.name + "_init.js").then(res => res.text()));
+			const drawFunc = eval(await fetch(tutorialDirectory + viewConfig.name + "_loop.js").then(res => res.text()));
+			const view = new View(viewConfig.name, viewConfig.width, viewConfig.height, initFunc, drawFunc);
+			views.set(viewConfig.name, view);
+			viewsContainer.appendChild(view.container);
+		} catch (err) {
+			const e = Error(`Failed loading view "${viewConfig.name}"`, err);
+			e.parent = err;
+			throw e;
+		}
 	}
 
 	// load properties
 	const propertiesContainer = document.createElement("div");
 	propertiesContainer.className = "properties";
 	for (const propertyConfig of tutorialConfig.properties) {
+		if (!propertyConfig.name) {
+			throw new Error(`Property is missing name`)
+		}
 		if (properties.has(propertyConfig.name)) {
 			throw new Error(`Duplicate property with name "${propertyConfig.name}"`)
 		}
-		const property = new Property(propertyConfig.name);
 
-		const propertyContainer = document.createElement("div");
-		propertyContainer.className = "property";
-		propertyContainer.appendChild(createElement("div", header => {
-			header.className = "property-header";
-			header.appendChild(createElement("label", label => {
-				label.textContent = property.name;
+		try {
+			const property = new Property(propertyConfig.name);
+
+			const propertyContainer = document.createElement("div");
+			propertyContainer.className = "property";
+			propertyContainer.appendChild(createElement("div", header => {
+				header.className = "property-header";
+				header.appendChild(createElement("label", label => {
+					label.textContent = property.name;
+				}));
+
+				// load presets
+				if (propertyConfig.presets) {
+					header.appendChild(createElement("select", select => {
+						for (let preset of propertyConfig.presets) {
+							select.appendChild(createElement("option", option => {
+								option.value = preset.value;
+								option.textContent = preset.name;
+							}));
+						}
+						select.onchange = () => {
+							property.setValue(eval(select.value));
+						};
+						property.addListener(value => {
+							const oldValue = eval(select.value);
+							if (oldValue && oldValue.toString() !== value.toString()) {
+								select.value = "";
+							}
+							for (let option of select.options) {
+								if (eval(option.value) === value) {
+									select.value = option.value;
+									break;
+								}
+							}
+						});
+					}));
+				}
 			}));
 
-			// load presets
-			if (propertyConfig.presets) {
-				header.appendChild(createElement("select", select => {
-					for (let preset of propertyConfig.presets) {
-						select.appendChild(createElement("option", option => {
-							option.value = preset.value;
-							option.textContent = preset.name;
+			// load different input options based on property type
+			const propertyInputs = document.createElement("div");
+			propertyInputs.className = "property-inputs";
+			switch (propertyConfig.type) {
+				case "boolean":
+					if (propertyConfig.input_checkbox === true) {
+						propertyInputs.appendChild(createElement("input", input => {
+							input.type = "checkbox";
+							input.onchange = () => property.setValue(input.checked);
+							property.addListener(value => input.checked = value);
 						}));
 					}
-					select.onchange = () => {
-						property.setValue(eval(select.value));
-					};
-					property.addListener(value => {
-						const oldValue = eval(select.value);
-						if (oldValue && oldValue.toString() !== value.toString()) {
-							select.value = "";
-						}
-						for (let option of select.options) {
-							if (eval(option.value) === value) {
-								select.value = option.value;
-								break;
+					break;
+				case "number":
+					if (propertyConfig.input_number === true) {
+						propertyInputs.appendChild(createElement("input", input => {
+							input.type = "number";
+							input.min = propertyConfig.min ?? -10.0;
+							input.max = propertyConfig.max ?? 10.0;
+							input.step = propertyConfig.step ?? "any";
+							input.onchange = () => property.setValue(input.value);
+							property.addListener(value => input.value = value);
+						}));
+					}
+					if (propertyConfig.input_slider === true) {
+						propertyInputs.appendChild(createElement("input", input => {
+							input.type = "range";
+							input.min = propertyConfig.min ?? -10.0;
+							input.max = propertyConfig.max ?? 10.0;
+							input.step = propertyConfig.step ?? "any";
+							input.oninput = () => property.setValue(input.value);
+							property.addListener(value => input.value = value);
+						}));
+					}
+					break;
+				case "vec2":
+				case "vec3":
+				case "vec4":
+				case "mat2":
+				case "mat3":
+				case "mat4":
+					if (propertyConfig.input_number === true) {
+						const rows = propertyConfig.type !== "number" ? Number(propertyConfig.type.substring(3)) : 1;
+						const cols = propertyConfig.type.startsWith("mat") ? rows : 1;
+						const inputs = [];
+						for (let col = 0; col < cols; col++) {
+							for (let row = 0; row < rows; row++) {
+								inputs[row * cols + col] = createElement("input", input => {
+									input.type = "number";
+									input.min = propertyConfig.min ?? -10.0;
+									input.max = propertyConfig.max ?? 10.0;
+									input.step = propertyConfig.step ?? "any";
+									input.onchange = () => property.setValue(inputs.map(input => input.value));
+								});
 							}
 						}
-					});
-				}));
+						for (let col = 0; col < cols; col++) {
+							const rowContainer = document.createElement("div");
+							for (let row = 0; row < rows; row++) {
+								rowContainer.appendChild(inputs[row * cols + col]);
+							}
+							propertyInputs.appendChild(rowContainer);
+						}
+						property.addListener(value => {
+							for (let i in inputs) {
+								inputs[i].value = value[i];
+							}
+						});
+					}
+
+					if (propertyConfig.input_slider === true) {
+						const rows = propertyConfig.type !== "number" ? Number(propertyConfig.type.substring(3)) : 1;
+						const cols = propertyConfig.type.startsWith("mat") ? rows : 1;
+						const inputs = [];
+						for (let col = 0; col < cols; col++) {
+							for (let row = 0; row < rows; row++) {
+								inputs[row * cols + col] = createElement("input", input => {
+									input.type = "range";
+									input.min = propertyConfig.min ?? -10.0;
+									input.max = propertyConfig.max ?? 10.0;
+									input.step = propertyConfig.step ?? "any";
+									input.oninput = () => property.setValue(inputs.map(input => input.value));
+								});
+							}
+						}
+						for (let col = 0; col < cols; col++) {
+							const rowContainer = document.createElement("div");
+							for (let row = 0; row < rows; row++) {
+								rowContainer.appendChild(inputs[row * cols + col]);
+							}
+							propertyInputs.appendChild(rowContainer);
+						}
+						property.addListener(value => {
+							for (let i in inputs) {
+								inputs[i].value = value[i];
+							}
+						});
+					}
+					break;
+				case "string (single-line)":
+					if (propertyConfig.input_text === true) {
+						propertyInputs.appendChild(createElement("input", input => {
+							input.type = "text";
+							input.onchange = () => property.setValue(input.checked);
+							property.addListener(value => input.checked = value);
+						}));
+					}
+					break;
+				case "string (multi-line)":
+					if (propertyConfig.input_textarea === true) {
+						const editor = property.editor = new EditorView({
+							parent: propertyInputs,
+							extensions: [basicSetup, javascript(), autocomplete_js, githubDark, EditorView.updateListener.of(update => {
+								property.setValue(update.state.doc.toString());
+							})]
+						});
+						property.addListener(value => {
+							if (editor.state.doc.toString() !== value) {
+								editor.dispatch({
+									changes: {
+										from: 0,
+										to: editor.state.doc.length,
+										insert: value
+									}
+								});
+							}
+						});
+					}
+					break;
 			}
-		}));
+			if (propertyInputs.hasChildNodes()) {
+				propertyContainer.appendChild(propertyInputs);
+			}
 
-		// load different input options based on property type
-		const propertyInputs = document.createElement("div");
-		propertyInputs.className = "property-inputs";
-		switch (propertyConfig.type) {
-			case "boolean":
-				if (propertyConfig.input_checkbox === true) {
-					propertyInputs.appendChild(createElement("input", input => {
-						input.type = "checkbox";
-						input.onchange = () => property.setValue(input.checked);
-						property.addListener(value => input.checked = value);
-					}));
-				}
-				break;
-			case "number":
-				if (propertyConfig.input_number === true) {
-					propertyInputs.appendChild(createElement("input", input => {
-						input.type = "number";
-						input.min = propertyConfig.min ?? -10.0;
-						input.max = propertyConfig.max ?? 10.0;
-						input.step = propertyConfig.step ?? "any";
-						input.onchange = () => property.setValue(input.value);
-						property.addListener(value => input.value = value);
-					}));
-				}
-				if (propertyConfig.input_slider === true) {
-					propertyInputs.appendChild(createElement("input", input => {
-						input.type = "range";
-						input.min = propertyConfig.min ?? -10.0;
-						input.max = propertyConfig.max ?? 10.0;
-						input.step = propertyConfig.step ?? "any";
-						input.oninput = () => property.setValue(input.value);
-						property.addListener(value => input.value = value);
-					}));
-				}
-				break;
-			case "vec2":
-			case "vec3":
-			case "vec4":
-			case "mat2":
-			case "mat3":
-			case "mat4":
-				if (propertyConfig.input_number === true) {
-					const rows = propertyConfig.type !== "number" ? Number(propertyConfig.type.substring(3)) : 1;
-					const cols = propertyConfig.type.startsWith("mat") ? rows : 1;
-					const inputs = [];
-					for (let col = 0; col < cols; col++) {
-						for (let row = 0; row < rows; row++) {
-							inputs[row * cols + col] = createElement("input", input => {
-								input.type = "number";
-								input.min = propertyConfig.min ?? -10.0;
-								input.max = propertyConfig.max ?? 10.0;
-								input.step = propertyConfig.step ?? "any";
-								input.onchange = () => property.setValue(inputs.map(input => input.value));
-							});
-						}
-					}
-					for (let col = 0; col < cols; col++) {
-						const rowContainer = document.createElement("div");
-						for (let row = 0; row < rows; row++) {
-							rowContainer.appendChild(inputs[row * cols + col]);
-						}
-						propertyInputs.appendChild(rowContainer);
-					}
-					property.addListener(value => {
-						for (let i in inputs) {
-							inputs[i].value = value[i];
-						}
-					});
-				}
+			properties.set(property.name, property);
+			propertiesContainer.appendChild(propertyContainer);
 
-				if (propertyConfig.input_slider === true) {
-					const rows = propertyConfig.type !== "number" ? Number(propertyConfig.type.substring(3)) : 1;
-					const cols = propertyConfig.type.startsWith("mat") ? rows : 1;
-					const inputs = [];
-					for (let col = 0; col < cols; col++) {
-						for (let row = 0; row < rows; row++) {
-							inputs[row * cols + col] = createElement("input", input => {
-								input.type = "range";
-								input.min = propertyConfig.min ?? -10.0;
-								input.max = propertyConfig.max ?? 10.0;
-								input.step = propertyConfig.step ?? "any";
-								input.oninput = () => property.setValue(inputs.map(input => input.value));
-							});
-						}
-					}
-					for (let col = 0; col < cols; col++) {
-						const rowContainer = document.createElement("div");
-						for (let row = 0; row < rows; row++) {
-							rowContainer.appendChild(inputs[row * cols + col]);
-						}
-						propertyInputs.appendChild(rowContainer);
-					}
-					property.addListener(value => {
-						for (let i in inputs) {
-							inputs[i].value = value[i];
-						}
-					});
-				}
-				break;
-			case "string (single-line)":
-				if (propertyConfig.input_text === true) {
-					propertyInputs.appendChild(createElement("input", input => {
-						input.type = "text";
-						input.onchange = () => property.setValue(input.checked);
-						property.addListener(value => input.checked = value);
-					}));
-				}
-				break;
-			case "string (multi-line)":
-				if (propertyConfig.input_textarea === true) {
-					const editor = property.editor = new EditorView({
-						parent: propertyInputs,
-						extensions: [basicSetup, javascript(), autocomplete_js, githubDark, EditorView.updateListener.of(update => {
-							property.setValue(update.state.doc.toString());
-						})]
-					});
-					property.addListener(value => {
-						if (editor.state.doc.toString() !== value) {
-							editor.dispatch({
-								changes: {
-									from: 0,
-									to: editor.state.doc.length,
-									insert: value
-								}
-							});
-						}
-					});
-				}
-				break;
+			// set default value
+			property.setValue(eval(propertyConfig.default));
+		} catch (err) {
+			const e = Error(`Failed loading property "${propertyConfig.name}"`, err);
+			e.parent = err;
+			throw e;
 		}
-		if (propertyInputs.hasChildNodes()) {
-			propertyContainer.appendChild(propertyInputs);
-		}
-
-		properties.set(property.name, property);
-		propertiesContainer.appendChild(propertyContainer);
-
-		// set default value
-		property.setValue(eval(propertyConfig.default));
 	}
 
 	// initialize views
 	for (const view of views.values()) {
-		await view.init();
+		try {
+			await view.init();
+		} catch (err) {
+			const e = Error(`Failed initializing view "${view.name}"`, err);
+			e.parent = err;
+			throw e;
+		}
 	}
 
 	// tutorial loaded successfully, set title and display tutorial
