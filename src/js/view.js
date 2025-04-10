@@ -469,16 +469,16 @@ async function start() {
 	}
 
 	// tutorial loaded successfully, set title and display tutorial
-	document.title = tutorialConfig.title;
+	document.title = tutorialConfig.name;
 	const tutorialContainer = document.createElement("div");
 	tutorialContainer.className = "tutorial";
 	tutorialContainer.appendChild(createElement("h1", title => {
-		title.textContent = tutorialConfig.title;
+		title.textContent = tutorialConfig.name;
 	}));
 	tutorialContainer.appendChild(document.createElement("hr"));
 	tutorialContainer.appendChild(createElement("p", paragraph => {
 		paragraph.className = "description";
-		paragraph.innerHTML = tutorialConfig.description;
+		paragraph.innerHTML = tutorialConfig.description || "";
 	}));
 	tutorialContainer.appendChild(document.createElement("hr"));
 	tutorialContainer.appendChild(createElement("h2", title => {

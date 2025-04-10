@@ -8,7 +8,7 @@ export async function fetchProgram(gl, vertexShader, fragmentShader) {
 	if (fragmentResponse.status >= 400) {
 		throw new Error(`${fragmentResponse.status} ${fragmentResponse.statusText}: Can't fetch shader from "${fragmentShader}"`);
 	}
-	return loadProgram(gl, await vertexResponse.test(), await fragmentResponse.text());
+	return loadProgram(gl, await vertexResponse.text(), await fragmentResponse.text());
 }
 
 export function loadProgram(gl, vertexShader, fragmentShader) {
