@@ -64,5 +64,5 @@ void main() {
         specular *= intensity;
     }
 
-    f_Color = vec4((ambient + diffuse + specular) * f_Color.xyz, 1.0);
+    f_Color = vec4((ambient + diffuse + specular) * f_Color.xyz, f_Color.w);
 }
