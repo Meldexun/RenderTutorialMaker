@@ -1,13 +1,15 @@
 (async function(gl) {
-	// enable view matrix manipulation with mouse
-	this.setupCamera3D([0.0, -10.0, 0.0], 0.0, 0.0, -40.0, () => properties.get("View Matrix").setValue(this.getCamera3D()));
+	// create default projection matrix
+	this.projection = mat4.perspective(mat4.create(), toRadian(70.0), gl.canvas.width / gl.canvas.height, 0.01, 10000.0);
+	// setup camera controls
+	this.setupCamera3D([0.0, 0.0, 0.0], 20.0, -30.0, -60.0);
 
 	// create model provider based on "Model" property
 	this.modelProvider = createModelProvider(gl, () => properties.get("Model").getValue());
 
 	// create object renderer
 	{
-		const program = await fetchProgram(gl, "position_texture_color.vsh", "position_texture_color.fsh");
+		const program = await fetchProgram(gl, "/shaders/position_texture_color.vsh", "/shaders/position_texture_color.fsh");
 		const u_ProjectionMatrix = gl.getUniformLocation(program, "u_ProjectionMatrix");
 		const u_ViewMatrix = gl.getUniformLocation(program, "u_ViewMatrix");
 		const u_ModelMatrix = gl.getUniformLocation(program, "u_ModelMatrix");
@@ -25,6 +27,9 @@
 			a_Color: a_Color
 		};
 	}
+
+	// create frustum renderer
+	this.frustumRenderer = await createFrustumRenderer(gl);
 
 	// setup default gl state
 	gl.enable(gl.DEPTH_TEST);
