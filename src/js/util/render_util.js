@@ -2,7 +2,7 @@ import { fetchProgram } from "./shader_loader.js";
 import { mat4 } from "gl-matrix";
 
 export async function createFrustumRenderer(gl) {
-	const program = await fetchProgram(gl, "position_color.vsh", "position_color.fsh");
+	const program = await fetchProgram(gl, "/shaders/position_color.vsh", "/shaders/position_color.fsh");
 	const u_ProjectionMatrix = gl.getUniformLocation(program, "u_ProjectionMatrix");
 	const u_ViewMatrix = gl.getUniformLocation(program, "u_ViewMatrix");
 	const u_ModelMatrix = gl.getUniformLocation(program, "u_ModelMatrix");
