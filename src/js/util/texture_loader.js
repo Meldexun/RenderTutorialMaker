@@ -11,8 +11,6 @@ export function loadTexture(gl, source) {
 		if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
 			gl.generateMipmap(gl.TEXTURE_2D);
 		} else {
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 		}
 	};
