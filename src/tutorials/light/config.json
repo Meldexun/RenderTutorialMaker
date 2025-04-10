@@ -1,0 +1,149 @@
+{
+	"name": "Light Tutorial",
+	"views": [
+		{
+			"name": "World Space View",
+			"width": "640",
+			"height": "360"
+		},
+		{
+			"name": "Screen Space View",
+			"width": "640",
+			"height": "360"
+		}
+	],
+	"properties": [
+		{
+			"name": "Model",
+			"type": "string (single-line)",
+			"default": "\"models/male/scene.gltf\"",
+			"presets": [
+				{
+					"name": "Farm",
+					"value": "\"models/farm/scene.gltf\""
+				},
+				{
+					"name": "Forest",
+					"value": "\"models/forest/scene.gltf\""
+				},
+				{
+					"name": "Male",
+					"value": "\"models/male/scene.gltf\""
+				},
+				{
+					"name": "Mouse",
+					"value": "\"models/mouse/scene.gltf\""
+				},
+				{
+					"name": "Spaceship",
+					"value": "\"models/spaceship/scene.gltf\""
+				}
+			]
+		},
+		{
+			"name": "Light Position",
+			"type": "vec3",
+			"default": "vec3.set(vec3.create(), 0.0, 15.0, 0.0)",
+			"min": -20.0,
+			"max": 20.0,
+			"step": 0.1,
+			"input_slider": true
+		},
+		{
+			"name": "Ambient Color",
+			"type": "vec4",
+			"default": "vec4.set(vec4.create(), 1.0, 1.0, 1.0, 0.1)",
+			"min": 0.0,
+			"max": 1.0,
+			"step": 0.01,
+			"input_slider": true
+		},
+		{
+			"name": "Diffuse Color",
+			"type": "vec4",
+			"default": "vec4.set(vec4.create(), 1.0, 1.0, 1.0, 1.0)",
+			"min": 0.0,
+			"max": 1.0,
+			"step": 0.01,
+			"input_slider": true
+		},
+		{
+			"name": "Specular Color",
+			"type": "vec4",
+			"default": "vec4.set(vec4.create(), 1.0, 1.0, 1.0, 0.5)",
+			"min": 0.0,
+			"max": 1.0,
+			"step": 0.01,
+			"input_slider": true
+		},
+		{
+			"name": "Specular Shininess",
+			"type": "number",
+			"default": "32.0",
+			"min": 0.0,
+			"max": 100.0,
+			"step": 0.1,
+			"input_slider": true
+		},
+		{
+			"name": "Constant Attenuation",
+			"type": "number",
+			"default": "1.0",
+			"min": -5.0,
+			"max": 5.0,
+			"step": 0.01,
+			"input_number": true,
+			"input_slider": true
+		},
+		{
+			"name": "Linear Attenuation",
+			"type": "number",
+			"default": "0.0",
+			"min": -1.0,
+			"max": 1.0,
+			"step": 0.01,
+			"input_number": true,
+			"input_slider": true
+		},
+		{
+			"name": "Quadratic Attenuation",
+			"type": "number",
+			"default": "0.0",
+			"min": -1.0,
+			"max": 1.0,
+			"step": 0.01,
+			"input_number": true,
+			"input_slider": true
+		},
+		{
+			"name": "Light Direction",
+			"type": "vec3",
+			"default": "vec3.set(vec3.create(), 0.0, -1.0, 0.0)",
+			"min": -1.0,
+			"max": 1.0,
+			"step": 0.01,
+			"input_number": true,
+			"input_slider": true
+		},
+		{
+			"name": "Inner Cutoff",
+			"type": "number",
+			"default": "180.0",
+			"min": 0.0,
+			"max": 180.0,
+			"step": 1.0,
+			"input_number": true,
+			"input_slider": true
+		},
+		{
+			"name": "Outer Cutoff",
+			"type": "number",
+			"default": "180.0",
+			"min": 0.0,
+			"max": 180.0,
+			"step": 1.0,
+			"input_number": true,
+			"input_slider": true
+		}
+	]
+}
