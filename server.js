@@ -282,26 +282,30 @@ app.post("/save", express.text(), (req, res) => {
 		return null;
 	}
 	let duplicate;
+	if (!config.name) {
+		console.log("Tutorial is missing name!");
+		return res.status(400).send("Tutorial is missing name!");
+	}
 	// check view names
-	if (allDefined(config.views)) {
+	if (!allDefined(config.views)) {
 		console.log("View is missing name!");
 		return res.status(400).send("View is missing name!");
 	}
 	if (duplicate = firstDuplicate(config.views)) {
-		console.log(`Duplicate view name ${duplicate}!`);
-		return res.status(400).send(`Duplicate view name ${duplicate}!`);
+		console.log(`Duplicate view name "${duplicate}"!`);
+		return res.status(400).send(`Duplicate view name "${duplicate}"!`);
 	}
 	// check property names
-	if (allDefined(config.properties)) {
+	if (!allDefined(config.properties)) {
 		console.log("Property is missing name!");
 		return res.status(400).send("Property is missing name!");
 	}
 	if (duplicate = firstDuplicate(config.properties)) {
-		console.log(`Duplicate property name ${duplicate}!`);
-		return res.status(400).send(`Duplicate property name ${duplicate}!`);
+		console.log(`Duplicate property name "${duplicate}"!`);
+		return res.status(400).send(`Duplicate property name "${duplicate}"!`);
 	}
 	// check preset names
-	if (allDefined(config.properties.flatMap(property => property.presets))) {
+	if (!allDefined(config.properties.flatMap(property => property.presets || []))) {
 		console.log("Preset is missing name!");
 		return res.status(400).send("Preset is missing name!");
 	}
@@ -334,7 +338,7 @@ app.post("/save", express.text(), (req, res) => {
 		}
 		fs.renameSync(temp, target);
 
-		console.log(`Saved tutorial ${user + "/" + config.name} successfully.`)
+		console.log(`Saved tutorial "${user + "/" + config.name}" successfully.`)
 		res.send("Tutorial saved successfully!");
 	} catch (err) {
 		// delete temp files silently
