@@ -3,7 +3,7 @@ const express = require('express');
 const session = require('express-session');
 const fs = require('fs');
 const http_terminator = require('http-terminator');
-const multer = require('multer');
+const json5 = require('json5');
 const path = require('path');
 const readline = require('readline');
 
@@ -216,7 +216,7 @@ app.post("/logout", (req, res) => {
 });
 
 // handle tutorial save requests
-app.post("/save", multer().none(), (req, res) => {
+app.post("/save", express.text(), (req, res) => {
 	const user = req.session.user;
 	console.log(`Processing save request from user "${user}"`);
 	if (!user) {
@@ -224,10 +224,90 @@ app.post("/save", multer().none(), (req, res) => {
 		return res.status(401).send("Log in required");
 	}
 
-	const { body } = req;
+	let config = {
+		name: null,
+		description: null,
+		views: [
+			{
+				name: null,
+				width: null,
+				height: null,
+				init: null,
+				loop: null
+			}
+		],
+		properties: [
+			{
+				name: null,
+				type: null,
+				default: null,
+				min: null,
+				max: null,
+				step: null,
+				language: null,
+				input_checkbox: null,
+				input_number: null,
+				input_slider: null,
+				input_text: null,
+				input_textarea: null,
+				presets: [
+					{
+						name: null,
+						value: null
+					}
+				]
+			}
+		]
+	};
+	try {
+		config = json5.parse(req.body);
+	} catch (err) {
+		console.log("Failed parsing tutorial as json5!");
+		console.log(err);
+		return res.status(400).send("Tutorial not in json5 format!");
+	}
+
+	// validate tutorial json
+	function allDefined(a) {
+		return !a.some(a => !a.name);
+	}
+	function firstDuplicate(a) {
+		const set = new Set();
+		for (e of a) {
+			if (set.has(e.name)) {
+				return e.name;
+			}
+			set.add(e.name);
+		}
+		return null;
+	}
+	let duplicate;
+	// check view names
+	if (allDefined(config.views)) {
+		console.log("View is missing name!");
+		return res.status(400).send("View is missing name!");
+	}
+	if (duplicate = firstDuplicate(config.views)) {
+		console.log(`Duplicate view name ${duplicate}!`);
+		return res.status(400).send(`Duplicate view name ${duplicate}!`);
+	}
+	// check property names
+	if (allDefined(config.properties)) {
+		console.log("Property is missing name!");
+		return res.status(400).send("Property is missing name!");
+	}
+	if (duplicate = firstDuplicate(config.properties)) {
+		console.log(`Duplicate property name ${duplicate}!`);
+		return res.status(400).send(`Duplicate property name ${duplicate}!`);
+	}
+	// check preset names
+	if (allDefined(config.properties.flatMap(property => property.presets))) {
+		console.log("Preset is missing name!");
+		return res.status(400).send("Preset is missing name!");
+	}
 
 	// save tutorial in temp folder
-	const temp = path.join(__dirname, "temp", user, body.name);
+	const temp = path.join(__dirname, "temp", user, config.name);
 	try {
 		// delete existing
 		if (fs.existsSync(temp)) {
@@ -238,83 +318,23 @@ app.post("/save", multer().none(), (req, res) => {
 		fs.mkdirSync(temp, { recursive: true });
 
 		// save tutorial files into temp folder
-		const config = {
-			title: body.name,
-			views: [],
-			properties: []
-		};
-		for (let i = 0; body["view_" + i + "_name"]; i++) {
-			config.views[i] = {
-				id: body["view_" + i + "_name"],
-				width: body["view_" + i + "_width"],
-				height: body["view_" + i + "_height"]
-			};
-			fs.writeFileSync(temp + "/" + body["view_" + i + "_name"] + "_init.js", "(async function(gl) {\n" + body["view_" + i + "_init"] + "\n});\n", "utf8");
-			fs.writeFileSync(temp + "/" + body["view_" + i + "_name"] + "_loop.js", "(function(gl, time, properties) {\n" + body["view_" + i + "_loop"] + "\n});\n", "utf8");
-		}
-		for (let i = 0; body["property_" + i + "_name"]; i++) {
-			config.properties[i] = {
-				id: body["property_" + i + "_name"],
-				type: body["property_" + i + "_type"],
-				default: body["property_" + i + "_defaultValue"]
-			};
-			switch (body["property_" + i + "_type"]) {
-				case "boolean":
-					if (body["property_" + i + "_input_checkbox"] === "on") {
-						config.properties[i]["input_checkbox"] = true;
-					}
-					break;
-				case "number":
-				case "vec2":
-				case "vec3":
-				case "vec4":
-				case "mat2":
-				case "mat3":
-				case "mat4":
-					if (body["property_" + i + "_min"] && body["property_" + i + "_min"] !== "") {
-						config.properties[i]["min"] = body["property_" + i + "_min"];
-					}
-					if (body["property_" + i + "_max"] && body["property_" + i + "_max"] !== "") {
-						config.properties[i]["max"] = body["property_" + i + "_max"];
-					}
-					if (body["property_" + i + "_input_number"] === "on") {
-						config.properties[i]["input_number"] = true;
-					}
-					if (body["property_" + i + "_type"] === "number" && body["property_" + i + "_input_slider"] === "on") {
-						config.properties[i]["input_slider"] = true;
-					}
-					break;
-				case "string (single-line)":
-				case "string (multi-line)":
-					config.properties[i]["language"] = body["property_" + i + "_language"];
-					if (body["property_" + i + "_type"] === "string (single-line)" && body["property_" + i + "_input_text"] === "on") {
-						config.properties[i]["input_text"] = true;
-					}
-					if (body["property_" + i + "_type"] === "string (multi-line)" && body["property_" + i + "_input_textarea"] === "on") {
-						config.properties[i]["input_textarea"] = true;
-					}
-					break;
-				default:
-					throw new Error("Invalid property type '" + body["property_" + i + "_type"] + "'");
-			}
-			if (body["property_" + i + "_input_presets"] === "on") {
-				config.properties[i]["input_presets"] = true;
-				config.properties[i]["presets"] = [];
-				for (let j = 0; body["property_" + i + "_preset_" + j]; j++) {
-					config.properties[i]["presets"][j] = body["property_" + i + "_preset_" + j];
-				}
-			}
-		}
-		fs.writeFileSync(temp + "/config.json", JSON.stringify(config, null, 2), "utf8");
+		config.views.forEach(view => {
+			fs.writeFileSync(path.join(temp, view.name + "_init.js"), "(async function(gl) {\n" + (view.init || "") + "\n});\n", "utf8");
+			fs.writeFileSync(path.join(temp, view.name + "_loop.js"), "(function(gl, time) {\n" + (view.loop || "") + "\n});\n", "utf8");
+			delete view.init;
+			delete view.loop;
+		});
+		fs.writeFileSync(temp + "/config.json", json5.stringify(config, null, "\t"), "utf8");
 
 		// everything saved successfully into temp folder -> move into target tutorial folder
-		const target = path.join(__dirname, "userdata", "tutorials", user, body.name);
+		const target = path.join(__dirname, "userdata", "tutorials", user, config.name);
 		fs.mkdirSync(target, { recursive: true });
 		if (fs.existsSync(target)) {
 			fs.rmSync(target, { recursive: true });
 		}
 		fs.renameSync(temp, target);
 
+		console.log(`Saved tutorial ${user + "/" + config.name} successfully.`)
 		res.send("Tutorial saved successfully!");
 	} catch (err) {
 		// delete temp files silently
@@ -326,9 +346,9 @@ app.post("/save", multer().none(), (req, res) => {
 			// ignore
 		}
 
-		console.log("An error occurred while processing tutorial save request. Please try again or ask an administrator for help.");
+		console.log("An unknown error occurred while processing tutorial save request!");
 		console.log(err);
-		res.send("Failed saving tutorial!");
+		res.status(500).send("Server failed saving tutorial. Please try again or ask an administrator for help.");
 	}
 });
 

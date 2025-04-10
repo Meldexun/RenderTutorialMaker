@@ -411,7 +411,7 @@ document.getElementById("save").onclick = async _ => {
 	const res = await fetch("/save", {
 		method: "POST",
 		headers: {
-			"Content-Type": "application/json"
+			"Content-Type": "text/plain"
 		},
 		body: tutorialJson
 	});
