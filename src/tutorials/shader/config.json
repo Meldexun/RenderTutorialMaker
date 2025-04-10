@@ -1,0 +1,78 @@
+{
+	"title": "Shader Tutorial",
+	"description": "This is a shader tutorial",
+	"credits": "",
+	"views": [
+		{
+			"name": "World Space View",
+			"width": 640,
+			"height": 360
+		},
+		{
+			"name": "Screen Space View",
+			"width": 640,
+			"height": 360
+		}
+	],
+	"properties": [
+		{
+			"name": "Model",
+			"type": "string (single-line)",
+			"default": "\"models/spaceship/scene.gltf\"",
+			"presets": [
+				{
+					"name": "Farm",
+					"value": "\"models/farm/scene.gltf\""
+				},
+				{
+					"name": "Forest",
+					"value": "\"models/forest/scene.gltf\""
+				},
+				{
+					"name": "Male",
+					"value": "\"models/male/scene.gltf\""
+				},
+				{
+					"name": "Mouse",
+					"value": "\"models/mouse/scene.gltf\""
+				},
+				{
+					"name": "Spaceship",
+					"value": "\"models/spaceship/scene.gltf\""
+				}
+			]
+		},
+		{
+			"name": "Fragment Shader",
+			"type": "string (multi-line)",
+			"default": "\"f_Color = texture(u_Texture, v_Texture) * v_Color;\"",
+			"presets": [
+				{
+					"name": "Simple",
+					"value": "\"f_Color = texture(u_Texture, v_Texture) * v_Color;\""
+				},
+				{
+					"name": "Cylindrical Fog",
+					
+					"value": "`f_Color = texture(u_Texture, v_Texture) * v_Color;\n\
+vec3 color = vec3(1.0, 0.5, 0.5);\n\
+float start = 55.0;\n\
+float end = 60.0;\n\
+vec3 offset = vec3(u_ViewMatrix * vec4(v_Position, 1.0));\n\
+float distance = max(length(offset.xz), abs(offset.y));\n\
+float strength = clamp((distance - start) / (end - start), 0.0, 1.0);\n\
+f_Color = vec4(mix(f_Color.xyz, color, strength), f_Color.w);`"
+				},
+				{
+					"name": "Directional Light",
+					"value": "`f_Color = texture(u_Texture, v_Texture) * v_Color;\n\
+vec3 color = vec3(1.0, 1.0, 0.5);\n\
+vec3 direction = vec3(0.0, -1.0, 0.0);\n\
+float strength = (dot(normalize(v_Normal), -direction) + 1.0) / 2.0;\n\
+f_Color = vec4(strength * color * f_Color.xyz, f_Color.w);`"
+				}
+			],
+			"input_textarea": true
+		}
+	]
+}
