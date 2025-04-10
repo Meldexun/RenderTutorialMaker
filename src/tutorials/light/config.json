@@ -16,7 +16,7 @@
 		{
 			"name": "Model",
 			"type": "string (single-line)",
-			"default": "\"models/male/scene.gltf\"",
+			"default": "\"models/farm/scene.gltf\"",
 			"presets": [
 				{
 					"name": "Farm",
