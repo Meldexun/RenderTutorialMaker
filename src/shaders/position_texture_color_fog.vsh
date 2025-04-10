@@ -13,6 +13,7 @@ out vec2 v_Texture;
 out vec4 v_Color;
 
 void main() {
+    gl_PointSize = 10.0;
     vec4 modelPosition = u_ModelMatrix * vec4(a_Position, 1.0);
     gl_Position = u_ProjectionMatrix * u_ViewMatrix * modelPosition;
     v_Position = vec3(modelPosition);

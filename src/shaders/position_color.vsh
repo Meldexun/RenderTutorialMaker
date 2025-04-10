@@ -10,6 +10,7 @@ in vec4 a_Color;
 out vec4 v_Color;
 
 void main() {
+    gl_PointSize = 10.0;
     gl_Position = u_ProjectionMatrix * u_ViewMatrix * u_ModelMatrix * vec4(a_Position, 1.0);
     v_Color = a_Color;
 }
