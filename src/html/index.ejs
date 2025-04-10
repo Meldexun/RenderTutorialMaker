@@ -6,6 +6,18 @@
 	<link rel="stylesheet" href="css/global.css">
 	<link rel="stylesheet" href="css/index.css">
 	<title>Render Tutorial Maker</title>
+	<script>
+		fetch("/user_tutorials")
+			.then(res => res.text())
+			.then(json => {
+				const container = document.getElementById("user-tutorials");
+				for (let tutorial of JSON.parse(json)) {
+					const entry = document.createElement("li");
+					entry.innerHTML = `<a href="${tutorial}">${tutorial}</a>`;
+					container.appendChild(entry);
+				}
+			});
+	</script>
 </head>
 
 <body>
@@ -22,7 +34,7 @@
 			<hr>
 
 			<h2>User Tutorials</h2>
-			<p>Coming soon</p>
+			<ul id="user-tutorials" style="min-height: 100px; max-height: 300px; width: 400px; overflow-y: scroll;"></ul>
 		</section>
 		<section>
 			<h1>Tutorial Editor</h1>

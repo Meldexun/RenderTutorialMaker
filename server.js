@@ -75,6 +75,18 @@ app.get("/login_required", (req, res) => {
 		render(req, res, "login_required.ejs");
 	}
 });
+app.get("/user_tutorials", (req, res) => {
+	try {
+		const dir = path.join(__dirname, "userdata", "tutorials");
+		const tutorials = fs.readdirSync(dir)
+			.filter(p => fs.lstatSync(path.join(dir, p)).isDirectory())
+			.flatMap(p => fs.readdirSync(path.join(dir, p)).map(p1 => p + "/" + p1))
+			.filter(p => fs.lstatSync(path.join(dir, p)).isDirectory());
+		res.send(JSON.stringify(tutorials));
+	} catch (err) {
+		res.send(JSON.stringify([]));
+	}
+});
 
 // handle register/login/logout requests
 const userDataFile = path.join(__dirname, "users.json");
