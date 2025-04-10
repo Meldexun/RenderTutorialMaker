@@ -55,7 +55,6 @@ Fragment Shader Output: f_Color</pre>",
 				},
 				{
 					"name": "Cylindrical Fog",
-					
 					"value": "`f_Color = texture(u_Texture, v_Texture) * v_Color;\n\
 vec3 color = vec3(1.0, 0.5, 0.5);\n\
 float start = 55.0;\n\
