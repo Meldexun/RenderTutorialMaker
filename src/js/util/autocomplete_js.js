@@ -41,6 +41,16 @@ const options_base = [
 	{ label: "renderGLTF", type: "function" },
 	{ label: "createFrustumRenderer", type: "function" }
 ];
+const options_thin = [
+	{ label: "vec2", type: "object" },
+	{ label: "vec3", type: "object" },
+	{ label: "vec4", type: "object" },
+	{ label: "mat2", type: "object" },
+	{ label: "mat3", type: "object" },
+	{ label: "mat4", type: "object" },
+	{ label: "Math", type: "object" },
+	{ label: "toRadian", type: "function" }
+];
 
 // if regex matches returns CompletionResult
 //   from: regex match start + length of group 1
@@ -103,6 +113,48 @@ export const autocomplete_js = autocompletion({
 			return autocomplete_local;
 		} else {
 			return autocomplete_base;
+		}
+	}]
+});
+
+export const autocomplete_thin = autocompletion({
+	override: [context => {
+		let autocomplete;
+		if (autocomplete = autocomplete_match(context, /((?:^|[^\w\.])((?:vec|mat)\d)\.)\w*/, match => {
+			switch (match[2]) {
+				case "vec2":
+					return options_vec2;
+				case "vec3":
+					return options_vec3;
+				case "vec4":
+					return options_vec4;
+				case "mat2":
+					return options_mat2;
+				case "mat3":
+					return options_mat3;
+				case "mat4":
+					return options_mat4;
+				default:
+					return null;
+			}
+		})) {
+			return autocomplete;
+		}
+		if (autocomplete = autocomplete_match(context, /((?:^|[^\w\.])Math\.)\w*/, _ => options_Math)) {
+			return autocomplete;
+		}
+		const autocomplete_local = localCompletionSource(context);
+		const autocomplete_thin = autocomplete_match(context, /((?:^|[^\w\.]))\w*/, _ => options_thin);
+		if (autocomplete_local) {
+			if (autocomplete_thin) {
+				const result = {};
+				Object.keys(autocomplete_local).filter(p => p !== "options").forEach(p => result[p] = autocomplete_local[p]);
+				result.options = autocomplete_local.options.concat(autocomplete_thin.options);
+				return result;
+			}
+			return autocomplete_local;
+		} else {
+			return autocomplete_thin;
 		}
 	}]
 });
