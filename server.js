@@ -375,6 +375,31 @@ app.post("/save", express.text(), (req, res) => {
 		res.status(500).send("Server failed saving tutorial. Please try again or ask an administrator for help.");
 	}
 });
+// handle tutorial delete requests
+app.post("/delete", express.text(), (req, res) => {
+	const user = req.session.user;
+	console.log(`Processing delete request from user "${user}"`);
+	if (!user) {
+		console.log(`Ignore delete request because user is not logged in`);
+		return res.status(401).send("Log in required");
+	}
+
+	const tutorial = path.join(__dirname, "userdata", "tutorials", user, req.body);
+	try {
+		if (!fs.existsSync(tutorial)) {
+			console.log(`Tutorial "${user + "/" + req.body}" does not exist.`);
+			return res.status(400).send("Tutorial does not exist!");
+		}
+		fs.rmSync(tutorial, { recursive: true });
+
+		console.log(`Deleted tutorial "${user + "/" + req.body}" successfully.`)
+		res.send("Tutorial deleted successfully!");
+	} catch (err) {
+		console.log("An unknown error occurred while processing tutorial delete request!");
+		console.log(err);
+		res.status(500).send("Server failed deleting tutorial. Please try again or ask an administrator for help.");
+	}
+});
 
 // start server listening on given port
 const server = app.listen(process.env.port || 25565);

@@ -436,6 +436,25 @@ document.addEventListener("keydown", ev => {
 	}
 });
 
+// send delete request to server when delete button is clicked
+document.getElementById("delete").onclick = async _ => {
+	const res = await fetch("/delete", {
+		method: "POST",
+		headers: {
+			"Content-Type": "text/plain"
+		},
+		body: document.getElementById("name").value
+	});
+	const messageContainer = document.createElement("span");
+	if (res.status >= 400) {
+		messageContainer.style = "color: red;";
+	} else {
+		messageContainer.style = "color: #a0a2a4";
+	}
+	messageContainer.innerText = await res.text();
+	document.getElementById("status-message").replaceChildren(messageContainer);
+};
+
 // ---------- Helper Functions ---------- //
 
 function createElement(type, onCreated = _ => { }) {
