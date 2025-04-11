@@ -1,5 +1,6 @@
 ## Render Tutorial Maker
 Commands
+- `npm i` installs all required dependencies
 - `npm run build` runs webpack to build the application
 - `npm run dev` runs the server (`node server.js`). When the server is started use the `help` command to view a list of all available commands during runtime.
 
