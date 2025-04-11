@@ -332,7 +332,7 @@ class Presets {
 			header.appendChild(createElement("label", label => {
 				label.innerText = "Presets";
 			}));
-			header.appendChild(createElement("button", button => {
+			header.appendChild(this.addBtn = createElement("button", button => {
 				button.type = "button";
 				button.innerText = "Add";
 				button.onclick = _ => {
@@ -511,3 +511,127 @@ function addOption(select, value) {
 		element.innerText = value;
 	}));
 }
+
+// load tutorial if provided
+{
+	// parse tutorial id from url search parameters
+	const searchParams = new URLSearchParams(new URL(window.location.href).searchParams);
+	const tutorialId = searchParams.get("id");
+	if (tutorialId) {
+		await loadTutorial(tutorialId);
+	}
+	async function loadTutorial(tutorialId) {
+		const tutorialDirectory = "/tutorials/" + tutorialId + "/";
+
+		// load tutorial configuration json
+		const tutorialResponse = await fetch(tutorialDirectory + "config.json");
+		if (tutorialResponse.status >= 400) {
+			return;
+		}
+		const json = await tutorialResponse.text();
+		let config = {
+			name: null,
+			description: null,
+			views: [
+				{
+					name: null,
+					width: null,
+					height: null
+				}
+			],
+			properties: [
+				{
+					name: null,
+					type: null,
+					default: null,
+					min: null,
+					max: null,
+					step: null,
+					language: null,
+					input_checkbox: null,
+					input_number: null,
+					input_slider: null,
+					input_text: null,
+					input_textarea: null,
+					presets: [
+						{
+							name: null,
+							value: null
+						}
+					]
+				}
+			]
+		};
+		try {
+			config = json5.parse(json);
+		} catch (err) {
+			return;
+		}
+
+		document.getElementById("name").value = config.name;
+		descriptionEditor.dispatch({
+			changes: {
+				from: 0,
+				to: descriptionEditor.state.doc.length,
+				insert: config.description
+			}
+		});
+		for (const viewCfg of config.views) {
+			document.getElementById("add_view").onclick();
+			const view = views[views.length - 1];
+			view.name.value = viewCfg.name;
+			view.width.value = viewCfg.width;
+			view.height.value = viewCfg.height;
+			view.init.editor.dispatch({
+				changes: {
+					from: 0,
+					to: view.init.editor.state.doc.length,
+					insert: (await fetch(tutorialDirectory + viewCfg.name + "_init.js").then(res => res.text())).match(/\(async function\(gl\) {\n([\s\S]*)\n}\);\n/)[1]
+				}
+			});
+			view.loop.editor.dispatch({
+				changes: {
+					from: 0,
+					to: view.loop.editor.state.doc.length,
+					insert: (await fetch(tutorialDirectory + viewCfg.name + "_loop.js").then(res => res.text())).match(/\(function\(gl, time\) {\n([\s\S]*)\n}\);\n/)[1]
+				}
+			});
+		}
+		for (const propertyCfg of config.properties) {
+			document.getElementById("add_property").onclick();
+			const property = properties[properties.length - 1];
+			property.name.value = propertyCfg.name;
+			property.type.element.value = propertyCfg.type;
+			property.type.element.onchange();
+			property.default.editor.dispatch({
+				changes: {
+					from: 0,
+					to: property.default.editor.state.doc.length,
+					insert: propertyCfg.default
+				}
+			});
+			property.min.element.value = propertyCfg.min;
+			property.max.element.value = propertyCfg.max;
+			property.step.element.value = propertyCfg.step;
+			property.lang.element.value = propertyCfg.language;
+			property.input_checkbox.checkbox.checked = propertyCfg.input_checkbox;
+			property.input_number.checkbox.checked = propertyCfg.input_number;
+			property.input_slider.checkbox.checked = propertyCfg.input_slider;
+			property.input_text.checkbox.checked = propertyCfg.input_text;
+			property.input_textarea.checkbox.checked = propertyCfg.input_textarea;
+			for (const presetCfg of propertyCfg.presets || []) {
+				property.presets.addBtn.onclick();
+				const preset = property.presets.presets[property.presets.presets.length - 1];
+				preset.name.value = presetCfg.name;
+				preset.editor.dispatch({
+					changes: {
+						from: 0,
+						to: preset.editor.state.doc.length,
+						insert: presetCfg.value
+					}
+				});
+			}
+		}
+	}
+}
+
