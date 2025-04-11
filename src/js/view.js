@@ -500,8 +500,16 @@ async function start() {
 	document.title = tutorialConfig.name;
 	const tutorialContainer = document.createElement("div");
 	tutorialContainer.className = "tutorial";
-	tutorialContainer.appendChild(createElement("h1", title => {
-		title.textContent = tutorialConfig.name;
+	tutorialContainer.appendChild(createElement("div", header => {
+		header.className = "tutorial-header";
+		header.appendChild(createElement("h1", title => {
+			title.textContent = tutorialConfig.name;
+		}));
+		header.appendChild(createElement("button", edit => {
+			edit.type = "button";
+			edit.textContent = "Open in Editor";
+			edit.onclick = _ => window.open("/edit?id=" + tutorialId);
+		}));
 	}));
 	tutorialContainer.appendChild(document.createElement("hr"));
 	tutorialContainer.appendChild(createElement("p", paragraph => {
