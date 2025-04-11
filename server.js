@@ -87,6 +87,20 @@ app.get("/user_tutorials", (req, res) => {
 		res.send(JSON.stringify([]));
 	}
 });
+app.get("/tutorials", express.text(), (req, res) => {
+	try {
+		if (req.session.user) {
+			const dir = path.join(__dirname, "userdata", "tutorials", req.session.user);
+			const tutorials = fs.readdirSync(dir)
+				.filter(p => fs.lstatSync(path.join(dir, p)).isDirectory());
+			res.send(JSON.stringify({ user: req.session.user, tutorials: tutorials }));
+		} else {
+			res.send(JSON.stringify({ user: null, tutorials: [] }));
+		}
+	} catch (err) {
+		res.send(JSON.stringify({ user: null, tutorials: [] }));
+	}
+});
 
 // handle register/login/logout requests
 const userDataFile = path.join(__dirname, "users.json");

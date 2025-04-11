@@ -6,13 +6,65 @@
 	<link rel="stylesheet" href="css/global.css">
 	<link rel="stylesheet" href="css/profile.css">
 	<title>Profile</title>
-	<script src="js/edit.js" type="module"></script>
+	<script>
+		fetch("/tutorials")
+			.then(res => res.text())
+			.then(json => {
+				const { user, tutorials } = JSON.parse(json);
+				const container = document.getElementById("tutorial-list");
+				for (let tutorial of tutorials) {
+					const entry = document.createElement("li");
+
+					const name = document.createElement("label");
+					name.innerText = tutorial;
+
+					const openBtn = document.createElement("button");
+					openBtn.type = "button";
+					openBtn.textContent = "Open";
+					openBtn.onclick = ev => {
+						window.open("/view?id=" + user + "/" + tutorial);
+					};
+					const editBtn = document.createElement("button");
+					editBtn.type = "button";
+					editBtn.textContent = "Edit";
+					editBtn.onclick = ev => {
+						window.open("/edit?id=" + user + "/" + tutorial);
+					};
+					const deleteBtn = document.createElement("button");
+					deleteBtn.type = "button";
+					deleteBtn.textContent = "Delete";
+					deleteBtn.onclick = ev => {
+						fetch("/delete", {
+							method: "POST",
+							headers: {
+								"Content-Type": "text/plain"
+							},
+							body: tutorial
+						}).then(res => {
+							if (res.status >= 400) {
+								res.text().then(text => console.log(text));
+							} else {
+								entry.remove();
+							}
+						});
+					};
+
+					entry.appendChild(name);
+					entry.appendChild(openBtn);
+					entry.appendChild(editBtn);
+					entry.appendChild(deleteBtn);
+
+					container.appendChild(entry);
+				}
+			});
+	</script>
 </head>
 
 <body>
 	<header><%- include('header.ejs'); %></header>
 	<main>
-		NYI
+		<h2>Tutorials</h2>
+		<ul id="tutorial-list"></ul>
 	</main>
 	<footer><%- include('footer.ejs'); %></footer>
 </body>

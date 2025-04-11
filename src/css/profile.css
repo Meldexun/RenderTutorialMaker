@@ -1,0 +1,15 @@
+ul {
+	margin: 0px;
+}
+
+li {
+	display: flex;
+
+	>label {
+		min-width: 300px;
+	}
+
+	>* {
+		margin: 5px;
+	}
+}
