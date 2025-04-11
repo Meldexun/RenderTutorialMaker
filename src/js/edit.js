@@ -413,7 +413,6 @@ document.getElementById("save").onclick = async _ => {
 	};
 	const tutorialJson = json5.stringify(tutorialObject);
 
-	console.log(tutorialObject);
 	const res = await fetch("/save", {
 		method: "POST",
 		headers: {
@@ -421,7 +420,14 @@ document.getElementById("save").onclick = async _ => {
 		},
 		body: tutorialJson
 	});
-	console.log(res);
+	const messageContainer = document.createElement("span");
+	if (res.status >= 400) {
+		messageContainer.style = "color: red;";
+	} else {
+		messageContainer.style = "color: #a0a2a4";
+	}
+	messageContainer.innerText = await res.text();
+	document.getElementById("status-message").replaceChildren(messageContainer);
 };
 document.addEventListener("keydown", ev => {
 	if (ev.ctrlKey && ev.key === "s") {
