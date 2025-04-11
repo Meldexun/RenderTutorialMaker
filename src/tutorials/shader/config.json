@@ -1,9 +1,9 @@
 {
 	"name": "Shader Tutorial",
 	"description": "<pre>Here you can write a custom main function for your fragment shader.\n\
-Uniforms: u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix, u_Texture\n\
-Vertex Shader Outputs: v_Position, v_Texture, v_Color, v_Normal\n\
-Fragment Shader Output: f_Color</pre>",
+  Uniforms: u_ProjectionMatrix, u_ViewMatrix, u_ModelMatrix, u_Texture\n\
+  Vertex Shader Outputs: v_Position, v_Texture, v_Color, v_Normal\n\
+  Fragment Shader Output: f_Color</pre>",
 	"views": [
 		{
 			"name": "World Space View",
