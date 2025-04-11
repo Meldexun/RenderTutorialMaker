@@ -74,6 +74,12 @@ f_Color = vec4(strength * color * f_Color.xyz, f_Color.w);`"
 				}
 			],
 			"input_textarea": true
+		},
+		{
+			"name": "Output",
+			"type": "string (multi-line)",
+			"default": "\"\"",
+			"input_textarea": true
 		}
 	]
 }

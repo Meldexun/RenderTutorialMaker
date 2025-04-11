@@ -59,8 +59,9 @@
 				gl.deleteProgram(this.program);
 			}
 			this.program = program;
+			properties.get("Output").setValue("Fragment shader compiled successfully!");
 		} catch (err) {
-			console.log(err);
+			properties.get("Output").setValue(err.toString());
 		}
 	}
 
