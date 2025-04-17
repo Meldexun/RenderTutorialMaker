@@ -1,6 +1,6 @@
 (async function(gl) {
 	// create default projection matrix
-	this.projection = mat4.perspective(mat4.create(), toRadian(70.0), gl.canvas.width / gl.canvas.height, 0.01, 10000.0);
+	this.projection = mat4.perspective(mat4.create(), toRadian(70.0), gl.canvas.width / gl.canvas.height, 1.0, 1000.0);
 	// setup camera controls
 	this.setupCamera3D([0.0, 0.0, 0.0], 40.0, -30.0, -80.0);
 
