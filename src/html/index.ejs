@@ -13,7 +13,7 @@
 				const container = document.getElementById("user-tutorials");
 				for (let tutorial of JSON.parse(json)) {
 					const entry = document.createElement("li");
-					entry.innerHTML = `<a href="${tutorial}">${tutorial}</a>`;
+					entry.innerHTML = `<a href="/view?id=${tutorial}">${tutorial}</a>`;
 					container.appendChild(entry);
 				}
 			});
