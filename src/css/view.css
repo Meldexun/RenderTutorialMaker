@@ -79,17 +79,15 @@ main {
 }
 
 .editor-multi>.cm-editor {
-	min-height: 10vh;
-	max-height: 25vh;
+
+	.cm-content,
+	.cm-gutter {
+		min-height: 10vh;
+	}
 }
 
 .cm-scroller {
 	border-style: solid;
 	border-width: 1px;
 	border-color: #3D444D;
-}
-
-.cm-lineNumbers,
-.cm-foldGutter {
-	min-height: 10vh !important;
 }

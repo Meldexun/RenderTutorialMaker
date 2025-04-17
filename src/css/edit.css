@@ -108,20 +108,18 @@ main {
 		}
 	}
 
-	.description-editor-container>.cm-editor {
-		height: 25vh;
-	}
-
+	.description-editor-container,
 	.view {
-		.cm-editor {
-			height: 25vh;
+
+		.cm-content,
+		.cm-gutter {
+			min-height: 25vh;
 		}
 	}
 
 	.property {
 		.cm-editor {
 			min-height: 26px;
-			max-height: 100px;
 		}
 	}
 }
