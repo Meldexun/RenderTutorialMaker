@@ -1,4 +1,7 @@
 ## Render Tutorial Maker
+Prerequisites
+- Install npm [https://docs.npmjs.com/downloading-and-installing-node-js-and-npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+
 Commands
 - `npm i` installs all required dependencies
 - `npm run build` runs webpack to build the application
