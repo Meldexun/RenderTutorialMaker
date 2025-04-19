@@ -7,6 +7,7 @@ import * as RenderUtil from "./util/render_util.js";
 import json5 from "json5";
 import { EditorView, basicSetup } from "codemirror";
 import { keymap } from "@codemirror/view";
+import { indentWithTab } from "@codemirror/commands";
 import { Prec } from "@codemirror/state";
 import { javascript } from "@codemirror/lang-javascript";
 import { autocomplete_thin } from "./util/autocomplete_js";
@@ -447,6 +448,9 @@ async function start() {
 									ev.preventDefault();
 								}
 							}));
+						}
+						if (propertyConfig.type === "string (multi-line)") {
+							extensions.push(keymap.of(indentWithTab));
 						}
 						const container = document.createElement("div");
 						container.className = "editor-" + (propertyConfig.type === "string (single-line)" ? "single" : "multi");

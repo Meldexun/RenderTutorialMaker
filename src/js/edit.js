@@ -1,4 +1,6 @@
 import { EditorView, basicSetup } from "codemirror";
+import { keymap } from "@codemirror/view";
+import { indentWithTab } from "@codemirror/commands";
 import { html } from "@codemirror/lang-html";
 import { javascript } from "@codemirror/lang-javascript";
 import { autocomplete_js, autocomplete_thin } from "./util/autocomplete_js";
@@ -8,7 +10,7 @@ import json5 from 'json5';
 // create html editor for tutorial description
 const descriptionEditor = new EditorView({
 	parent: document.getElementById("description-container"),
-	extensions: [basicSetup, html(), githubDark]
+	extensions: [basicSetup, keymap.of(indentWithTab), html(), githubDark]
 });
 
 class View {
@@ -71,13 +73,13 @@ class View {
 		// create init code editor
 		this.init = new LabeledEditor("Initialization Code", container => ({
 			parent: container,
-			extensions: [basicSetup, javascript(), autocomplete_js, githubDark]
+			extensions: [basicSetup, keymap.of(indentWithTab), javascript(), autocomplete_js, githubDark]
 		}));
 
 		// create render code editor
 		this.loop = new LabeledEditor("Render Code", container => ({
 			parent: container,
-			extensions: [basicSetup, javascript(), autocomplete_js, githubDark]
+			extensions: [basicSetup, keymap.of(indentWithTab), javascript(), autocomplete_js, githubDark]
 		}));
 
 		// build container for this view
@@ -220,7 +222,7 @@ class Property {
 		// create default input
 		this.default = new LabeledEditor("Default", container => ({
 			parent: container,
-			extensions: [basicSetup, javascript(), autocomplete_thin, githubDark]
+			extensions: [basicSetup, keymap.of(indentWithTab), javascript(), autocomplete_thin, githubDark]
 		}));
 		this.default.container.className = "input-multiline";
 
@@ -376,7 +378,7 @@ class Preset {
 		this.container.appendChild(this.header);
 		this.editor = new EditorView({
 			parent: this.container,
-			extensions: [basicSetup, javascript(), autocomplete_thin, githubDark]
+			extensions: [basicSetup, keymap.of(indentWithTab), javascript(), autocomplete_thin, githubDark]
 		});
 	}
 
