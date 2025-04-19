@@ -6,6 +6,8 @@
 	const projectionMatrix = this.projection;
 	const viewMatrix = this.getCamera3D();
 	const modelMatrix = properties.get("Model Matrix").getValue();
+	const frustumProjectionMatrix = properties.get("Projection Matrix").getValue();
+	const frustumViewMatrix = properties.get("View Matrix").getValue();
 
 	// render object
 	gl.useProgram(this.objectRenderer.program);
@@ -18,7 +20,5 @@
 	gl.useProgram(null);
 
 	// render frustum
-	const frustumProjectionMatrix = properties.get("Projection Matrix").getValue();
-	const frustumViewMatrix = properties.get("View Matrix").getValue();
 	this.frustumRenderer.render(gl, projectionMatrix, viewMatrix, frustumProjectionMatrix, frustumViewMatrix);
 });

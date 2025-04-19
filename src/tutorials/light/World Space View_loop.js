@@ -6,6 +6,8 @@
 	const projectionMatrix = this.projection;
 	const viewMatrix = this.getCamera3D();
 	const modelMatrix = mat4.create();
+	const frustumProjectionMatrix = views.get("Screen Space View").projection;
+	const frustumViewMatrix = views.get("Screen Space View").getCamera3D();
 
 	// render object
 	gl.useProgram(this.objectRenderer.program);
@@ -13,7 +15,7 @@
 	gl.uniformMatrix4fv(this.objectRenderer.u_ViewMatrix, false, viewMatrix);
 
 	// light properties
-	const invertedView = mat4.invert(mat4.create(), views.get("Screen Space View").getCamera3D());
+	const invertedView = mat4.invert(mat4.create(), frustumViewMatrix);
 	gl.uniform3f(this.objectRenderer.u_ViewPosition, invertedView[12], invertedView[13], invertedView[14]);
 	gl.uniform3fv(this.objectRenderer.u_LightPosition, properties.get("Light Position").getValue());
 	gl.uniform4fv(this.objectRenderer.u_AmbientColor, properties.get("Ambient Color").getValue());
@@ -36,8 +38,6 @@
 	gl.useProgram(null);
 
 	// render frustum
-	const frustumProjectionMatrix = views.get("Screen Space View").projection;
-	const frustumViewMatrix = views.get("Screen Space View").getCamera3D();
 	this.frustumRenderer.render(gl, projectionMatrix, viewMatrix, frustumProjectionMatrix, frustumViewMatrix);
 
 	// render light
