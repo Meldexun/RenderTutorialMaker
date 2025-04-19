@@ -155,12 +155,28 @@ app.post("/register", express.urlencoded({ extended: false }), (req, res) => {
 	const { user, password } = req.body;
 	console.log(`User "${user}" registering`);
 
+	if (!user) {
+		console.log(req.session.error = `User is missing`);
+		return res.redirect(req.headers.referer || "/");
+	}
+	if (user.length > 100) {
+		console.log(req.session.error = `User "${user}" is too long (maximum is 100 characters)`);
+		return res.redirect(req.headers.referer || "/");
+	}
 	if (userRegistered(user)) {
 		console.log(req.session.error = `User "${user}" already registered`);
 		return res.redirect(req.headers.referer || "/");
 	}
 	if (!userUnlocked(user)) {
 		console.log(req.session.error = `User "${user}" not unlocked for registration`);
+		return res.redirect(req.headers.referer || "/");
+	}
+	if (!password) {
+		console.log(req.session.error = `Password is missing`);
+		return res.redirect(req.headers.referer || "/");
+	}
+	if (bcryptjs.truncates(password)) {
+		console.log(req.session.error = `Password is too long`);
 		return res.redirect(req.headers.referer || "/");
 	}
 
