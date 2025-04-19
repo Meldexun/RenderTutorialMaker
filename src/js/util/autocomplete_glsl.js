@@ -105,6 +105,6 @@ function autocomplete_match(context, regex, getOptions) {
 }
 export const autocomplete_glsl = autocompletion({
 	override: [context => {
-		return autocomplete_match(context, /((?:^|[^\w\.]))\w*/, _ => options_base);
+		return autocomplete_match(context, context.explicit ? /((?:^|[^\w\.]))\w*$/ : /((?:^|[^\w\.]))\w+$/, _ => options_base);
 	}]
 });

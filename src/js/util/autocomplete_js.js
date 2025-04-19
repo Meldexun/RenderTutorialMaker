@@ -135,7 +135,7 @@ export const autocomplete_js = autocompletion({
 			return autocomplete;
 		}
 		const autocomplete_local = localCompletionSource(context);
-		const autocomplete_base = autocomplete_match(context, /((?:^|[^\w\.]))\w*/, _ => options_base);
+		const autocomplete_base = autocomplete_match(context, context.explicit ? /((?:^|[^\w\.]))\w*$/ : /((?:^|[^\w\.]))\w+$/, _ => options_base);
 		if (autocomplete_local) {
 			if (autocomplete_base) {
 				const result = {};
@@ -177,7 +177,7 @@ export const autocomplete_thin = autocompletion({
 			return autocomplete;
 		}
 		const autocomplete_local = localCompletionSource(context);
-		const autocomplete_thin = autocomplete_match(context, /((?:^|[^\w\.]))\w*/, _ => options_thin);
+		const autocomplete_thin = autocomplete_match(context, context.explicit ? /((?:^|[^\w\.]))\w*$/ : /((?:^|[^\w\.]))\w+$/, _ => options_thin);
 		if (autocomplete_local) {
 			if (autocomplete_thin) {
 				const result = {};
