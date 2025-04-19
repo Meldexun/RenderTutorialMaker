@@ -47,6 +47,7 @@
 		{
 			"name": "Fragment Shader",
 			"type": "string (multi-line)",
+			"language": "GLSL",
 			"default": "\"f_Color = texture(u_Texture, v_Texture) * v_Color;\"",
 			"presets": [
 				{

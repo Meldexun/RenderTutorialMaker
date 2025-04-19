@@ -11,6 +11,7 @@ import { indentWithTab } from "@codemirror/commands";
 import { Prec } from "@codemirror/state";
 import { javascript } from "@codemirror/lang-javascript";
 import { autocomplete_thin } from "./util/autocomplete_js";
+import { autocomplete_glsl } from "./util/autocomplete_glsl";
 import { githubDark } from '@uiw/codemirror-theme-github';
 
 // workaround to make dependencies available in eval expressions
@@ -431,6 +432,9 @@ async function start() {
 						if (propertyConfig.language === "JavaScript") {
 							extensions.push(javascript());
 							extensions.push(autocomplete_thin);
+						}
+						if (propertyConfig.language === "GLSL") {
+							extensions.push(autocomplete_glsl);
 						}
 						// disable entry, paste and drop for single-line
 						if (propertyConfig.type === "string (single-line)") {

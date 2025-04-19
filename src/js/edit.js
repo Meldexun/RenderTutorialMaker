@@ -244,6 +244,7 @@ class Property {
 		this.lang = new LabeledElement("Language", "select", lang => {
 			addOption(lang, "Plain-Text");
 			addOption(lang, "JavaScript");
+			addOption(lang, "GLSL");
 		});
 		this.lang.container.className = "input-oneline";
 
