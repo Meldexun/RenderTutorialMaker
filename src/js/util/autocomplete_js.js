@@ -20,6 +20,28 @@ const options_mat2 = options(Object.keys(mat2), p => typeof mat2[p]);
 const options_mat3 = options(Object.keys(mat3), p => typeof mat3[p]);
 const options_mat4 = options(Object.keys(mat4), p => typeof mat4[p]);
 const options_Math = options(Object.getOwnPropertyNames(Math), p => typeof Math[p]);
+const options_Map = [
+	{ label: "get", type: "function" },
+	{ label: "has", type: "function" },
+	{ label: "keys", type: "function" },
+	{ label: "values", type: "function" },
+	{ label: "entries", type: "function" },
+	{ label: "forEach", type: "function" },
+	{ label: "size", type: "property" }
+];
+const options_View = [
+	{ label: "name", type: "property" },
+	{ label: "canvas", type: "property" },
+	{ label: "gl", type: "property" },
+	{ label: "container", type: "property" },
+	{ label: "setupCamera3D", type: "function" },
+	{ label: "getCamera3D", type: "function" }
+];
+const options_Property = [
+	{ label: "name", type: "property" },
+	{ label: "getValue", type: "function" },
+	{ label: "setValue", type: "function" }
+];
 const options_base = [
 	{ label: "gl", type: "object" },
 	{ label: "vec2", type: "object" },
@@ -39,7 +61,9 @@ const options_base = [
 	{ label: "loadAndInitGLTF", type: "function" },
 	{ label: "disposeGLTF", type: "function" },
 	{ label: "renderGLTF", type: "function" },
-	{ label: "createFrustumRenderer", type: "function" }
+	{ label: "createFrustumRenderer", type: "function" },
+	{ label: "views", type: "object" },
+	{ label: "properties", type: "object" }
 ];
 const options_thin = [
 	{ label: "vec2", type: "object" },
@@ -99,6 +123,15 @@ export const autocomplete_js = autocompletion({
 			return autocomplete;
 		}
 		if (autocomplete = autocomplete_match(context, /((?:^|[^\w\.])Math\.)\w*/, _ => options_Math)) {
+			return autocomplete;
+		}
+		if (autocomplete = autocomplete_match(context, /((?:^|[^\w\.])(?:views|properties)\.)\w*/, _ => options_Map)) {
+			return autocomplete;
+		}
+		if (autocomplete = autocomplete_match(context, /((?:^|[^\w\.])views\.get\("\w*"\)\.)\w*/, _ => options_View)) {
+			return autocomplete;
+		}
+		if (autocomplete = autocomplete_match(context, /((?:^|[^\w\.])properties\.get\("\w*"\)\.)\w*/, _ => options_Property)) {
 			return autocomplete;
 		}
 		const autocomplete_local = localCompletionSource(context);
