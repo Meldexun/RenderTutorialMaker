@@ -6,6 +6,8 @@
 	const projectionMatrix = this.projection;
 	const viewMatrix = this.getCamera3D();
 	const modelMatrix = mat4.create();
+	const frustumProjectionMatrix = views.get("Screen Space View").projection;
+	const frustumViewMatrix = views.get("Screen Space View").getCamera3D();
 
 	// render object
 	gl.useProgram(this.objectRenderer.program);
@@ -17,7 +19,7 @@
 	gl.uniform1f(this.objectRenderer.u_FogEnd, properties.get("Fog End").getValue());
 	gl.uniform1f(this.objectRenderer.u_FogDensity, properties.get("Fog Density").getValue());
 	gl.uniform4fv(this.objectRenderer.u_FogColor, properties.get("Fog Color").getValue());
-	gl.uniformMatrix4fv(this.objectRenderer.u_FogMatrix, false, this.getCamera3D());
+	gl.uniformMatrix4fv(this.objectRenderer.u_FogMatrix, false, frustumViewMatrix);
 
 	const model = this.modelProvider.getModel();
 	if (model != null) {
@@ -26,7 +28,5 @@
 	gl.useProgram(null);
 
 	// render frustum
-	const frustumProjectionMatrix = views.get("Screen Space View").projection;
-	const frustumViewMatrix = views.get("Screen Space View").getCamera3D();
 	this.frustumRenderer.render(gl, projectionMatrix, viewMatrix, frustumProjectionMatrix, frustumViewMatrix);
 });
