@@ -7,12 +7,8 @@ import json5 from 'json5';
 
 // create html editor for tutorial description
 const descriptionEditor = new EditorView({
-	parent: document.getElementById("description").parentNode,
-	extensions: [basicSetup, html(), githubDark, EditorView.updateListener.of(update => {
-		if (update.docChanged) {
-			document.getElementById("description").value = update.state.doc;
-		}
-	})]
+	parent: document.getElementById("description-container"),
+	extensions: [basicSetup, html(), githubDark]
 });
 
 class View {

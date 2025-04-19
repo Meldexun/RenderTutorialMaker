@@ -108,7 +108,7 @@ main {
 		}
 	}
 
-	.description-editor-container,
+	#description-container,
 	.view {
 
 		.cm-content,
