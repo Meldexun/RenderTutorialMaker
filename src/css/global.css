@@ -55,6 +55,18 @@ main {
 	flex-direction: column;
 	padding: 0 20px 20px;
 	flex-grow: 1;
+
+	#login {
+		display: flex;
+		justify-content: space-between;
+		flex-direction: column;
+		width: 250px;
+
+		.error {
+			color: red;
+		}
+	}
+
 }
 
 footer {
