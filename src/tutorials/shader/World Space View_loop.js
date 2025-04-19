@@ -60,7 +60,7 @@
 			}
 			this.program = program;
 		} catch (err) {
-			console.log(err);
+			// handled in screen space view
 		}
 	}
 
