@@ -540,12 +540,8 @@ async function start() {
 // called every frame to update the views
 function draw(time) {
 	try {
-		// create property map
-		const propertyMap = new Map();
-		properties.forEach((v, k) => propertyMap.set(k, v.getValue()));
-
 		// update views
-		views.forEach(view => view.draw(time, propertyMap));
+		views.forEach(view => view.draw(time));
 
 		requestAnimationFrame(draw);
 	} catch (error) {
