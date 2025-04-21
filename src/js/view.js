@@ -27,6 +27,7 @@ const mat3 = GLMatrix.mat3;
 const mat4 = GLMatrix.mat4;
 const toRadian = GLMatrix.glMatrix.toRadian;
 const loadGLTF = GLTF.loadGLTF;
+const loadProcessedGLTF = GLTF.loadProcessedGLTF;
 const initProcessedGLTF = GLTF.initProcessedGLTF;
 const loadAndInitGLTF = GLTF.loadAndInitGLTF;
 const disposeGLTF = GLTF.disposeGLTF;

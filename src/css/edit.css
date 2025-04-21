@@ -7,6 +7,12 @@ main {
 		margin: 0
 	}
 
+	.editor-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+	}
+
 	.tutorial-header {
 		display: flex;
 		justify-content: space-between;

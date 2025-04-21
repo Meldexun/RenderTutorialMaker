@@ -12,7 +12,10 @@
 <body>
 	<header><%- include('header.ejs'); %></header>
 	<main>
-		<h1>Tutorial Editor</h1>
+		<div class="editor-header">
+			<h1>Tutorial Editor</h1>
+			<button type="button" onclick="window.open('/documentation')">Open Documentation</button>
+		</div>
 		<form id="form" method="POST" action="/api/endpoint">
 			<div class="tutorial-header">
 				<div class="tutorial-name">

@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" href="css/global.css">
+	<link rel="stylesheet" href="css/documentation.css">
+	<title>Render Tutorial Maker</title>
+</head>
+
+<body>
+	<header><%- include('header.ejs'); %></header>
+	<main>
+		<h1>Editor Documentation</h1>
+		<p>
+			This is the documentation for the editor. All objects and methods that are available in the initialization method and draw method of a view are listed and explained below.
+		</p>
+		<table>
+			<tr>
+				<th>Name</th>
+				<th>Description</th>
+			</tr>
+			
+			
+
+			<tr>
+				<td>gl</td>
+				<td>
+					The <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL2RenderingContext">WebGL2RenderingContext</a> of the current view.
+				</td>
+			</tr>
+			<tr>
+				<td>views</td>
+				<td>
+					A map containing all views.
+				</td>
+			</tr>
+			<tr>
+				<td>properties</td>
+				<td>
+					A map containing all properties.
+				</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>fetchProgram</td>
+				<td>
+					fetchProgram(gl: WebGL2RenderingContext, vertexShader: string | URL, fragmentShader: string | URL): WebGLProgram<br>
+					<br>
+					Fetches the source of the vertex and fragment shader from the given URLs and then calls loadProgram.
+				</td>
+			</tr>
+			<tr>
+				<td>loadProgram</td>
+				<td>
+					loadProgram(gl: WebGL2RenderingContext, vertexShader: string, fragmentShader: string): WebGLProgram<br>
+					<br>
+					Creates a new WebGL program by calling loadShader for each shader, attaching them to the program and then linking the program. If the linking fails an error will be thrown. Otherwise the shaders will be deleted and the program will be returned.
+				</td>
+			</tr>
+			<tr>
+				<td>loadShader</td>
+				<td>
+					loadShader(gl: WebGL2RenderingContext, type: GLenum, source: string): WebGLShader<br>
+					<br>
+					Create a new WebGL shader using the specified type and source. Then the shader will be compiled. If the compiling fails an error will be thrown. Otherwise the shader will be returned.
+				</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>vec2, vec3, vec4, mat2, mat3, mat4</td>
+				<td>Modules of the <a href="https://glmatrix.net">gl-matrix</a> library. Allows creating and working with vectors and matrices. Check their documentation for more information <a href="https://glmatrix.net/docs">https://glmatrix.net/docs</a></td>
+			</tr>
+			<tr>
+				<td>toRadian</td>
+				<td>Utility method to convert degrees to radians (see <a href="https://glmatrix.net/docs/module-glMatrix.html">https://glmatrix.net/docs/module-glMatrix.html</a>)</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>loadGLTF</td>
+				<td>
+					loadGLTF(url: string): Promise&#60;GLTFWithBuffers&#62;<br>
+					<br>
+					Loads the GLTF model from the given URL using <a href="https://loaders.gl/docs/modules/gltf">loaders.gl</a> and returns the result.
+				</td>
+			</tr>
+			<tr>
+				<td>loadProcessedGLTF</td>
+				<td>
+					loadProcessedGLTF(url: string): Promise&#60;GLTFPostprocessed&#62;<br>
+					<br>
+					Calls loadGLTF to load the GLTF model from the given URL. Then calls <a href="https://loaders.gl/docs/modules/gltf/api-reference/post-process-gltf">postProcessGLTF</a> and returns the processed GLTF model.
+				</td>
+			</tr>
+			<tr>
+				<td>initProcessedGLTF</td>
+				<td>
+					initProcessedGLTF(gl: WebGL2RenderingContext, gltf: GLTFPostprocessed): GLTFPostprocessed<br>
+					<br>
+					Initializes the given processed GLTF model and returns the same object. Initializing includes:<br>
+					- creating an VBO for every attribute of every primitive<br>
+					- creating an IBO for every primitive<br>
+					- creating textures for every material (Only supports pbrMetallicRoughness with baseColorTexture or baseColorFactor. Otherwise the texture will be a white 1x1 texture)
+				</td>
+			</tr>
+			<tr>
+				<td>loadAndInitGLTF</td>
+				<td>
+					loadAndInitGLTF(gl: WebGL2RenderingContext, url: string): Promise&#60;GLTFPostprocessed&#62;<br>
+					<br>
+					Helper function that calls loadProcessedGLTF and initProcessedGLTF.
+				</td>
+			</tr>
+			<tr>
+				<td>disposeGLTF</td>
+				<td>
+					disposeGLTF(gl: WebGL2RenderingContext, gltf: GLTFPostprocessed): void<br>
+					<br>
+					Deletes the VBOs, IBOs, and textures created by calling initProcessedGLTF.
+				</td>
+			</tr>
+			<tr>
+				<td>createModelProvider</td>
+				<td>
+					createModelProvider(gl: WebGL2RenderingContext, urlSupplier: () => string)): ModelProvider<br>
+					<br>
+					Creates a ModelProvider object using the given WebGL context and URL supplier. A ModelProvider has a getModel method. Calling this method will invoke the URL supplier. When the URL has changed the old model will be disposed and loadAndInitGLTF will be called to load the new model asynchronously. When the model has finished loading it will be returned when calling getModel. Otherwise null will be returned.
+				</td>
+			</tr>
+			<tr>
+				<td>renderGLTF</td>
+				<td>
+					renderGLTF(gl: WebGL2RenderingContext, gltf: GLTFPostprocessed): void<br>
+					<br>
+					Renders the given initialized GLTF model using the current program. It is expected that the current program has a uniform named u_ModelMatrix to store the model matrix.<br>
+					The supported GLTF attributes are:<br>
+					- POSITION (uses the shader attribute named a_Position)<br>
+					- TEXCOORD_0 (uses the shader attribute named a_Texture)<br>
+					- COLOR_0 (uses the shader attribute named a_Color)<br>
+					- NORMAL (uses the shader attribute named a_Normal)<br>
+					(If the gltf attribute or the shader attribute does not exist the attribute will not be enabled)
+				</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>createFrustumRenderer</td>
+				<td>
+					Creates a new frustum renderer object.<br>
+					Call render(gl, projectionMatrix, viewMatrix, frustumProjectionMatrix, frustumViewMatrix) to render the frustum specified by the frustumProjectionMatrix and frustumViewMatrix parameters.<br>
+					Call dispose() to delete the program and VBOs allocated by this frustum renderer.
+				</td>
+			</tr>
+			
+			
+
+			<tr>
+				<td>View.setupCamera3D</td>
+				<td>
+					Adds mouse drag-click listeners to the view to allow controlling of the view matrix. The current view matrix can be retrieved by calling getCamera3D.
+				</td>
+			</tr>
+			<tr>
+				<td>View.getCamera3D</td>
+				<td>
+					Calculates the current view matrix of the view (requires calling setupCamera3D beforehand).
+				</td>
+			</tr>
+			
+			
+
+			<tr>
+				<td>Property.getValue</td>
+				<td>
+					Gets the current value of the property.
+				</td>
+			</tr>
+			<tr>
+				<td>Property.setValue</td>
+				<td>
+					Sets the value of the property.
+				</td>
+			</tr>
+		</table>
+	</main>
+	<footer><%- include('footer.ejs'); %></footer>
+</body>
+
+</html>
